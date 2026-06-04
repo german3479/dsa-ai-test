@@ -1,0 +1,342 @@
+[
+  {
+    "id": 46,
+    "title": "Longest Palindromic Subsequence",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP"
+    ],
+    "description": "Given a string s, return the longest palindromic subsequence's length in s.",
+    "examples": [
+      {
+        "input": "s = 'bbbab'",
+        "output": "4"
+      }
+    ],
+    "starter": "function longestPalindromeSubseq(s) {\n    // Your code here\n}",
+    "optimalSolution": "function longestPalindromeSubseq(s) {\n  const n = s.length;\n  const dp = Array.from({ length: n }, () => new Array(n).fill(0));\n  for (let i = n - 1; i >= 0; i--) {\n    dp[i][i] = 1;\n    for (let j = i + 1; j < n; j++) {\n      if (s[i] === s[j]) dp[i][j] = dp[i + 1][j - 1] + 2;\n      else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);\n    }\n  }\n  return dp[0][n - 1];\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(n^2)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 47,
+    "title": "Longest Repeating Substring",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP",
+      "Binary Search"
+    ],
+    "description": "Given a string s, find the longest substring that appears at least twice in s.",
+    "examples": [
+      {
+        "input": "s = 'abcd'",
+        "output": "0"
+      },
+      {
+        "input": "s = 'abbaba'",
+        "output": "4"
+      }
+    ],
+    "starter": "function longestRepeatingSubstring(s) {\n    // Your code here\n}",
+    "optimalSolution": "function longestRepeatingSubstring(s) {\n  let ans = 0;\n  const search = (len) => {\n    const seen = new Set();\n    let hash = 0, base = 256, mod = 100000007;\n    for (let i = 0; i < len; i++) hash = (hash * base + s.charCodeAt(i)) % mod;\n    seen.add(hash);\n    let power = 1;\n    for (let i = 1; i < len; i++) power = (power * base) % mod;\n    for (let i = 1; i <= s.length - len; i++) {\n      hash = (hash * base - s.charCodeAt(i - 1) * power + s.charCodeAt(i + len - 1)) % mod;\n      if (hash < 0) hash += mod;\n      if (seen.has(hash)) return true;\n      seen.add(hash);\n    }\n    return false;\n  };\n  let l = 1, r = s.length;\n  while (l <= r) {\n    const mid = (l + r) >> 1;\n    if (search(mid)) { ans = mid; l = mid + 1; }\n    else r = mid - 1;\n  }\n  return ans;\n}",
+    "optimalTime": "O(n^2 log n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Binary Search + Rolling Hash"
+  },
+  {
+    "id": 48,
+    "title": "Decode Ways",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP"
+    ],
+    "description": "A message containing letters from A-Z can be encoded into numbers using the mapping 'A' -> '1', 'B' -> '2', ... 'Z' -> '26'. Given a string s containing only digits, return the number of ways to decode it.",
+    "examples": [
+      {
+        "input": "s = '12'",
+        "output": "2"
+      },
+      {
+        "input": "s = '226'",
+        "output": "3"
+      }
+    ],
+    "starter": "function numDecodings(s) {\n    // Your code here\n}",
+    "optimalSolution": "function numDecodings(s) {\n  if (!s || s[0] === '0') return 0;\n  let prev = 1, curr = 1;\n  for (let i = 1; i < s.length; i++) {\n    const tmp = curr;\n    if (s[i] === '0') curr = 0;\n    if (s[i - 1] === '1' || (s[i - 1] === '2' && s[i] <= '6')) curr += prev;\n    prev = tmp;\n    if (!curr) return 0;\n  }\n  return curr;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 49,
+    "title": "Jump Game",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Greedy",
+      "DP"
+    ],
+    "description": "You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position. Return true if you can reach the last index, or false otherwise.",
+    "examples": [
+      {
+        "input": "nums = [2,3,1,1,4]",
+        "output": "true"
+      },
+      {
+        "input": "nums = [3,2,1,0,4]",
+        "output": "false"
+      }
+    ],
+    "starter": "function canJump(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function canJump(nums) {\n  let farthest = 0;\n  for (let i = 0; i < nums.length - 1; i++) {\n    farthest = Math.max(farthest, i + nums[i]);\n    if (farthest <= i) return false;\n  }\n  return farthest >= nums.length - 1;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Greedy"
+  },
+  {
+    "id": 50,
+    "title": "Jump Game II",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Greedy",
+      "DP"
+    ],
+    "description": "Given an array of non-negative integers nums, you are initially positioned at the first index of the array. Each element in the array represents your maximum jump length at that position. Return the minimum number of jumps to reach the last index.",
+    "examples": [
+      {
+        "input": "nums = [2,3,1,1,4]",
+        "output": "2"
+      }
+    ],
+    "starter": "function jump(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function jump(nums) {\n  let jumps = 0, currEnd = 0, farthest = 0;\n  for (let i = 0; i < nums.length - 1; i++) {\n    farthest = Math.max(farthest, i + nums[i]);\n    if (i === currEnd) { jumps++; currEnd = farthest; }\n  }\n  return jumps;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Greedy"
+  },
+  {
+    "id": 51,
+    "title": "Clone Graph",
+    "difficulty": "medium",
+    "topics": [
+      "Graph",
+      "DFS",
+      "BFS",
+      "Hash Table"
+    ],
+    "description": "Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph.",
+    "examples": [
+      {
+        "input": "adjList = [[2,4],[1,3],[2,4],[1,3]]",
+        "output": "[[2,4],[1,3],[2,4],[1,3]]"
+      }
+    ],
+    "starter": "function cloneGraph(node) {\n    // Your code here\n}",
+    "optimalSolution": "function cloneGraph(node) {\n  if (!node) return null;\n  const map = new Map();\n  const dfs = (n) => {\n    if (map.has(n)) return map.get(n);\n    const clone = new Node(n.val);\n    map.set(n, clone);\n    clone.neighbors = n.neighbors.map(dfs);\n    return clone;\n  };\n  return dfs(node);\n}",
+    "optimalTime": "O(V + E)",
+    "optimalSpace": "O(V)",
+    "pattern": "DFS / BFS"
+  },
+  {
+    "id": 52,
+    "title": "Number of Provinces",
+    "difficulty": "medium",
+    "topics": [
+      "Graph",
+      "DFS",
+      "BFS",
+      "Union Find"
+    ],
+    "description": "There are n cities. Some of them are connected, while others are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
+    "examples": [
+      {
+        "input": "isConnected = [[1,1,0],[1,1,0],[0,0,1]]",
+        "output": "2"
+      }
+    ],
+    "starter": "function findCircleNum(isConnected) {\n    // Your code here\n}",
+     "optimalSolution": "function findCircleNum(isConnected) {\n  const n = isConnected.length;\n  const visited = new Array(n).fill(false);\n  let count = 0;\n  const dfs = (i) => {\n    visited[i] = true;\n    for (let j = 0; j < n; j++)\n      if (isConnected[i][j] && !visited[j]) dfs(j);\n  };\n  for (let i = 0; i < n; i++)\n    if (!visited[i]) { count++; dfs(i); }\n  return count;\n}"
+  },
+  {
+    "id": 53,
+    "title": "Longest Common Subsequence",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP"
+    ],
+    "description": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
+    "examples": [
+      {
+        "input": "text1 = 'abcde', text2 = 'ace'",
+        "output": "3"
+      }
+    ],
+    "starter": "function longestCommonSubsequence(text1, text2) {\n    // Your code here\n}",
+    "optimalSolution": "function longestCommonSubsequence(text1, text2) {\n  const m = text1.length, n = text2.length;\n  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));\n  for (let i = 1; i <= m; i++)\n    for (let j = 1; j <= n; j++)\n      dp[i][j] = text1[i - 1] === text2[j - 1]\n        ? dp[i - 1][j - 1] + 1\n        : Math.max(dp[i - 1][j], dp[i][j - 1]);\n  return dp[m][n];\n}",
+    "optimalTime": "O(m * n)",
+    "optimalSpace": "O(m * n)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 54,
+    "title": "Spiral Matrix",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Matrix",
+      "Simulation"
+    ],
+    "description": "Given an m x n matrix, return all elements of the matrix in spiral order.",
+    "examples": [
+      {
+        "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+        "output": "[1,2,3,6,9,8,7,4,5]"
+      }
+    ],
+    "starter": "function spiralOrder(matrix) {\n    // Your code here\n}",
+    "optimalSolution": "function spiralOrder(matrix) {\n  const res = [];\n  let top = 0, bottom = matrix.length - 1, left = 0, right = matrix[0].length - 1;\n  while (top <= bottom && left <= right) {\n    for (let j = left; j <= right; j++) res.push(matrix[top][j]);\n    top++;\n    for (let i = top; i <= bottom; i++) res.push(matrix[i][right]);\n    right--;\n    if (top <= bottom) { for (let j = right; j >= left; j--) res.push(matrix[bottom][j]); bottom--; }\n    if (left <= right) { for (let i = bottom; i >= top; i--) res.push(matrix[i][left]); left++; }\n  }\n  return res;\n}",
+    "optimalTime": "O(m * n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Simulation"
+  },
+  {
+    "id": 55,
+    "title": "Subsets",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Backtracking",
+      "Bit Manipulation"
+    ],
+    "description": "Given an integer array nums of unique elements, return all possible subsets (the power set).",
+    "examples": [
+      {
+        "input": "nums = [1,2,3]",
+        "output": "[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]"
+      }
+    ],
+    "starter": "function subsets(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function subsets(nums) {\n  const res = [[]];\n  for (const num of nums) {\n    const len = res.length;\n    for (let i = 0; i < len; i++) res.push([...res[i], num]);\n  }\n  return res;\n}",
+    "optimalTime": "O(2^n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Backtracking"
+  },
+  {
+    "id": 56,
+    "title": "Merge Intervals",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Sorting"
+    ],
+    "description": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
+    "examples": [
+      {
+        "input": "intervals = [[1,3],[2,6],[8,10],[15,18]]",
+        "output": "[[1,6],[8,10],[15,18]]"
+      }
+    ],
+    "starter": "function merge(intervals) {\n    // Your code here\n}",
+    "optimalSolution": "function merge(intervals) {\n  intervals.sort((a, b) => a[0] - b[0]);\n  const res = [intervals[0]];\n  for (let i = 1; i < intervals.length; i++) {\n    const last = res[res.length - 1];\n    if (intervals[i][0] <= last[1]) last[1] = Math.max(last[1], intervals[i][1]);\n    else res.push(intervals[i]);\n  }\n  return res;\n}",
+    "optimalTime": "O(n log n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Sort + Merge"
+  },
+  {
+    "id": 57,
+    "title": "Permutations",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Backtracking"
+    ],
+    "description": "Given an array nums of distinct integers, return all the possible permutations.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3]",
+        "output": "[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]"
+      }
+    ],
+    "starter": "function permute(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function permute(nums) {\n  const res = [];\n  const dfs = (curr, used) => {\n    if (curr.length === nums.length) { res.push([...curr]); return; }\n    for (let i = 0; i < nums.length; i++) {\n      if (used[i]) continue;\n      used[i] = true;\n      curr.push(nums[i]);\n      dfs(curr, used);\n      curr.pop();\n      used[i] = false;\n    }\n  };\n  dfs([], new Array(nums.length).fill(false));\n  return res;\n}",
+    "optimalTime": "O(n!)",
+    "optimalSpace": "O(n)",
+    "pattern": "Backtracking"
+  },
+  {
+    "id": 58,
+    "title": "Minimum Window Substring",
+    "difficulty": "hard",
+    "topics": [
+      "String",
+      "Sliding Window",
+      "Hash Table"
+    ],
+    "description": "Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string.",
+    "examples": [
+      {
+        "input": "s = 'ADOBECODEBANC', t = 'ABC'",
+        "output": "'BANC'"
+      },
+      {
+        "input": "s = 'a', t = 'aa'",
+        "output": "''"
+      }
+    ],
+    "starter": "function minWindow(s, t) {\n    // Your code here\n}",
+    "optimalSolution": "function minWindow(s, t) {\n  const need = {};\n  for (const c of t) need[c] = (need[c] || 0) + 1;\n  let missing = t.length, l = 0, r = 0, start = 0, len = Infinity;\n  while (r < s.length) {\n    if (need[s[r]] > 0) missing--;\n    need[s[r]] = (need[s[r]] || 0) - 1;\n    r++;\n    while (missing === 0) {\n      if (r - l < len) { start = l; len = r - l; }\n      need[s[l]]++;\n      if (need[s[l]] > 0) missing++;\n      l++;\n    }\n  }\n  return len === Infinity ? '' : s.slice(start, start + len);\n}",
+    "optimalTime": "O(m + n)",
+    "optimalSpace": "O(k)",
+    "pattern": "Sliding Window"
+  },
+  {
+    "id": 59,
+    "title": "Trapping Rain Water",
+    "difficulty": "hard",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "DP",
+      "Stack"
+    ],
+    "description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+    "examples": [
+      {
+        "input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+        "output": "6"
+      }
+    ],
+    "starter": "function trap(height) {\n    // Your code here\n}",
+    "optimalSolution": "function trap(height) {\n  let l = 0, r = height.length - 1, lMax = 0, rMax = 0, water = 0;\n  while (l < r) {\n    if (height[l] < height[r]) {\n      height[l] >= lMax ? lMax = height[l] : water += lMax - height[l];\n      l++;\n    } else {\n      height[r] >= rMax ? rMax = height[r] : water += rMax - height[r];\n      r--;\n    }\n  }\n  return water;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers / Stack"
+  },
+  {
+    "id": 60,
+    "title": "Encode and Decode Strings (LeetCode 271)",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "String",
+      "Design"
+    ],
+    "description": "Design an algorithm to encode a list of strings to a single string and decode it back to the original list of strings.",
+    "examples": [
+      {
+        "input": "['Hello','World']",
+        "output": "['Hello','World']"
+      }
+    ],
+    "starter": "function encode(strs) {\n    // Your code here\n}\nfunction decode(s) {\n    // Your code here\n}",
+    "optimalSolution": "function encode(strs) {\n  return strs.map(s => `${s.length}#${s}`).join('');\n}\nfunction decode(s) {\n  const res = [];\n  let i = 0;\n  while (i < s.length) {\n    const j = s.indexOf('#', i);\n    const len = +s.slice(i, j);\n    res.push(s.slice(j + 1, j + 1 + len));\n    i = j + 1 + len;\n  }\n  return res;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "String Design"
+  }]

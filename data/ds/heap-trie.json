@@ -1,0 +1,70 @@
+[
+  {
+    "id": "heap-1",
+    "name": "Min Heap / Max Heap",
+    "description": "A complete binary tree where each node is smaller (min-heap) or larger (max-heap) than its children. In JavaScript, heaps are typically implemented using arrays. Used for priority queues, top-K problems, and finding K-th largest/smallest elements.",
+    "examples": [
+      {
+        "title": "Example 1: MinHeap Class Implementation",
+        "code": "class MinHeap {\n  constructor() {\n    this.heap = [];\n  }\n\n  // Parent index: (i - 1) / 2\n  // Left child: 2 * i + 1\n  // Right child: 2 * i + 2\n\n  peek() {\n    return this.heap[0];\n  }\n\n  size() {\n    return this.heap.length;\n  }\n\n  insert(value) {\n    this.heap.push(value);\n    this._bubbleUp(this.heap.length - 1);\n  }\n\n  extractMin() {\n    if (this.heap.length === 0) return null;\n    const min = this.heap[0];\n    const last = this.heap.pop();\n    if (this.heap.length > 0) {\n      this.heap[0] = last;\n      this._sinkDown(0);\n    }\n    return min;\n  }\n\n  _bubbleUp(index) {\n    while (index > 0) {\n      const parentIndex = Math.floor((index - 1) / 2);\n      if (this.heap[parentIndex] <= this.heap[index]) break;\n      [this.heap[parentIndex], this.heap[index]] = \n        [this.heap[index], this.heap[parentIndex]];\n      index = parentIndex;\n    }\n  }\n\n  _sinkDown(index) {\n    const length = this.heap.length;\n    while (true) {\n      let smallest = index;\n      const left = 2 * index + 1;\n      const right = 2 * index + 2;\n\n      if (left < length && this.heap[left] < this.heap[smallest]) {\n        smallest = left;\n      }\n      if (right < length && this.heap[right] < this.heap[smallest]) {\n        smallest = right;\n      }\n      if (smallest === index) break;\n      [this.heap[smallest], this.heap[index]] = \n        [this.heap[index], this.heap[smallest]];\n      index = smallest;\n    }\n  }\n}",
+        "explanation": "Array-based heap: parent at floor((i-1)/2), children at 2i+1 and 2i+2. insert() bubbles up, extractMin() replaces root with last element and sinks down. All operations O(log n)."
+      },
+      {
+        "title": "Example 2: Max Heap & Heapify",
+        "code": "class MaxHeap {\n  constructor() {\n    this.heap = [];\n  }\n\n  insert(value) {\n    this.heap.push(value);\n    this._bubbleUp(this.heap.length - 1);\n  }\n\n  extractMax() {\n    if (this.heap.length === 0) return null;\n    const max = this.heap[0];\n    const last = this.heap.pop();\n    if (this.heap.length > 0) {\n      this.heap[0] = last;\n      this._sinkDown(0);\n    }\n    return max;\n  }\n\n  _bubbleUp(index) {\n    while (index > 0) {\n      const parentIndex = Math.floor((index - 1) / 2);\n      if (this.heap[parentIndex] >= this.heap[index]) break;\n      [this.heap[parentIndex], this.heap[index]] = \n        [this.heap[index], this.heap[parentIndex]];\n      index = parentIndex;\n    }\n  }\n\n  _sinkDown(index) {\n    const length = this.heap.length;\n    while (true) {\n      let largest = index;\n      const left = 2 * index + 1;\n      const right = 2 * index + 2;\n      if (left < length && this.heap[left] > this.heap[largest]) largest = left;\n      if (right < length && this.heap[right] > this.heap[largest]) largest = right;\n      if (largest === index) break;\n      [this.heap[largest], this.heap[index]] = \n        [this.heap[index], this.heap[largest]];\n      index = largest;\n    }\n  }\n\n  // Build heap from array in O(n)\n  static heapify(arr) {\n    const heap = new MaxHeap();\n    heap.heap = arr;\n    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {\n      heap._sinkDown(i);\n    }\n    return heap;\n  }\n}",
+        "explanation": "MaxHeap is identical to MinHeap but comparisons are reversed. heapify() builds a heap from an unsorted array in O(n) by sinking down all non-leaf nodes. Useful for converting input data without O(n log n) inserts."
+      }
+    ]
+  },
+  {
+    "id": "heap-2",
+    "name": "Top K Patterns (Kth Largest / Smallest)",
+    "description": "Uses a heap to efficiently track the K largest or smallest elements in a stream or array. For K-th largest, use a min-heap of size K. For K-th smallest, use a max-heap of size K. Reduces O(n log n) sorting to O(n log k).",
+    "examples": [
+      {
+        "title": "Example 1: Kth Largest Element in Array",
+        "code": "function findKthLargest(nums, k) {\n  const minHeap = new MinHeap();\n\n  for (const num of nums) {\n    minHeap.insert(num);\n    if (minHeap.size() > k) {\n      minHeap.extractMin(); // evict smallest of the K+1\n    }\n  }\n  return minHeap.peek();\n}\n\n// Using built-in JavaScript (sort):\nfunction findKthLargestSort(nums, k) {\n  nums.sort((a, b) => b - a);\n  return nums[k - 1];\n}\n\n// Time: O(n log k) with heap, O(n log n) with sort\n// Space: O(k) with heap, O(1) or O(n) with sort",
+        "explanation": "Min-heap of size K always keeps the K largest elements seen so far. When heap exceeds K, remove the minimum. At the end, the heap root is the K-th largest. O(n log k) time, O(k) space."
+      },
+      {
+        "title": "Example 2: Top K Frequent Elements",
+        "code": "function topKFrequent(nums, k) {\n  // Step 1: Count frequencies\n  const freq = {};\n  for (const num of nums) {\n    freq[num] = (freq[num] || 0) + 1;\n  }\n\n  // Step 2: Min-heap on frequency\n  const heap = new MinHeap();\n  heap.compare = (a, b) => a.freq - b.freq; // customize comparator\n\n  for (const [num, count] of Object.entries(freq)) {\n    heap.insert({ num, freq: count });\n    if (heap.size() > k) heap.extractMin();\n  }\n\n  // Step 3: Extract result\n  return heap.heap.map(item => Number(item.num));\n}\n\n// Note: For production, extend MinHeap to accept a comparator function.",
+        "explanation": "Count frequencies first (O(n)). Then maintain a min-heap of size K on frequency. Elements with smallest frequency get evicted. Result contains K most frequent. Time O(n log k), Space O(n) for hash map + O(k) for heap."
+      }
+    ]
+  },
+  {
+    "id": "trie-1",
+    "name": "Trie (Prefix Tree)",
+    "description": "A tree-like data structure used to store strings where common prefixes share nodes. Each node represents a character, and paths from root to nodes form words. Used for autocomplete, spell check, prefix matching, and word searching.",
+    "examples": [
+      {
+        "title": "Example 1: TrieNode Class & Basic Operations",
+        "code": "class TrieNode {\n  constructor() {\n    this.children = {};\n    this.isEndOfWord = false;\n  }\n}\n\nclass Trie {\n  constructor() {\n    this.root = new TrieNode();\n  }\n\n  insert(word) {\n    let node = this.root;\n    for (const char of word) {\n      if (!node.children[char]) {\n        node.children[char] = new TrieNode();\n      }\n      node = node.children[char];\n    }\n    node.isEndOfWord = true;\n  }\n\n  search(word) {\n    let node = this.root;\n    for (const char of word) {\n      if (!node.children[char]) return false;\n      node = node.children[char];\n    }\n    return node.isEndOfWord;\n  }\n\n  startsWith(prefix) {\n    let node = this.root;\n    for (const char of prefix) {\n      if (!node.children[char]) return false;\n      node = node.children[char];\n    }\n    return true;\n  }\n}",
+        "explanation": "Each character becomes a node. insert() creates new nodes as needed. search() checks if word exists and is marked as end. startsWith() checks prefix existence without requiring end-of-word. All operations O(L) where L = word length."
+      },
+      {
+        "title": "Example 2: Word Search II (Trie + DFS Backtracking)",
+        "code": "class TrieNode {\n  constructor() {\n    this.children = {};\n    this.word = null; // store full word at end node\n  }\n}\n\nfunction buildTrie(words) {\n  const root = new TrieNode();\n  for (const word of words) {\n    let node = root;\n    for (const c of word) {\n      if (!node.children[c]) node.children[c] = new TrieNode();\n      node = node.children[c];\n    }\n    node.word = word;\n  }\n  return root;\n}\n\nfunction findWords(board, words) {\n  const root = buildTrie(words);\n  const result = [];\n  const rows = board.length;\n  const cols = board[0].length;\n\n  function dfs(r, c, node) {\n    const char = board[r][c];\n    if (!node.children[char]) return;\n    \n    node = node.children[char];\n    if (node.word) {\n      result.push(node.word);\n      node.word = null; // prevent duplicates\n    }\n\n    board[r][c] = '#'; // mark visited\n    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n      const nr = r + dr, nc = c + dc;\n      if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc] !== '#') {\n        dfs(nr, nc, node);\n      }\n    }\n    board[r][c] = char; // backtrack\n  }\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      dfs(r, c, root);\n    }\n  }\n  return result;\n}\n\n// Usage\n// findWords([['o','a','a','n'],['e','t','a','e'],['i','h','k','r'],['i','f','l','v']], ['oath','pea','eat','rain'])",
+        "explanation": "Build trie from word list. DFS from each board cell, following trie paths. Mark visited with '#'. Store word at terminal node to avoid repeated traversal. Time O(m * n * 4 * 3^(L-1)), Space O(N * L) for trie."
+      }
+    ]
+  },
+  {
+    "id": "heap-3",
+    "name": "Merge K Sorted Lists (Heap Pattern)",
+    "description": "Merges K sorted linked lists (or arrays) by always extracting the smallest/largest element from a heap containing the front of each list. Demonstrates the classic heap use case for conquer/merge problems.",
+    "examples": [
+      {
+        "title": "Example 1: Merge K Sorted Linked Lists",
+        "code": "function mergeKLists(lists) {\n  const minHeap = new MinHeap();\n  \n  // Insert head of each non-empty list\n  for (const head of lists) {\n    if (head) minHeap.insert({ val: head.val, node: head });\n  }\n\n  const dummy = { val: 0, next: null };\n  let current = dummy;\n\n  while (minHeap.size() > 0) {\n    const { node } = minHeap.extractMin();\n    current.next = node;\n    current = current.next;\n    \n    if (node.next) {\n      minHeap.insert({ val: node.next.val, node: node.next });\n    }\n  }\n  return dummy.next;\n}\n\n// Note: Extend MinHeap to compare objects by .val\nclass MinHeap {\n  // ... previous implementation ...\n  insert(value) {\n    this.heap.push(value);\n    this._bubbleUp(this.heap.length - 1);\n  }\n  _bubbleUp(index) {\n    while (index > 0) {\n      const parentIndex = Math.floor((index - 1) / 2);\n      if (this.heap[parentIndex].val <= this.heap[index].val) break;\n      [this.heap[parentIndex], this.heap[index]] = \n        [this.heap[index], this.heap[parentIndex]];\n      index = parentIndex;\n    }\n  }\n  extractMin() {\n    if (this.heap.length === 0) return null;\n    const min = this.heap[0];\n    const last = this.heap.pop();\n    if (this.heap.length > 0) {\n      this.heap[0] = last;\n      this._sinkDown(0);\n    }\n    return min;\n  }\n  _sinkDown(index) {\n    const length = this.heap.length;\n    while (true) {\n      let smallest = index;\n      const left = 2 * index + 1;\n      const right = 2 * index + 2;\n      if (left < length && this.heap[left].val < this.heap[smallest].val) smallest = left;\n      if (right < length && this.heap[right].val < this.heap[smallest].val) smallest = right;\n      if (smallest === index) break;\n      [this.heap[smallest], this.heap[index]] = [this.heap[index], this.heap[smallest]];\n      index = smallest;\n    }\n  }\n}",
+        "explanation": "Push first node of each list into min-heap. Repeatedly extract minimum, advance that list's pointer, and push the next node. Always processes the smallest available element. Time O(N log k) where N = total nodes, k = lists. Space O(k) for heap."
+      },
+      {
+        "title": "Example 2: Task Scheduler (Greedy + Heap)",
+        "code": "function leastInterval(tasks, n) {\n  const freq = {};\n  for (const task of tasks) {\n    freq[task] = (freq[task] || 0) + 1;\n  }\n\n  // Max-heap on frequency (negate for JS min-heap)\n  const maxHeap = [];\n  for (const count of Object.values(freq)) {\n    maxHeap.push(-count);\n  }\n  maxHeap.sort((a, b) => a - b); // initial heapify\n\n  let time = 0;\n  const queue = []; // [remainingCount, readyTime]\n\n  while (maxHeap.length || queue.length) {\n    time++;\n    if (maxHeap.length) {\n      let count = maxHeap.pop() + 1; // remove neg\n      if (count < 0) {\n        queue.push([count, time + n]);\n      }\n    }\n    if (queue.length && queue[0][1] <= time) {\n      maxHeap.push(queue.shift()[0]);\n    }\n  }\n  return time;\n}\n\n// Cleaner with MinHeap class (min-heap on readyTime):\nfunction leastIntervalClean(tasks, n) {\n  const freq = {};\n  for (const t of tasks) freq[t] = (freq[t] || 0) + 1;\n  const heap = Object.values(freq).sort((a, b) => b - a); // max-heap by negative ordering\n  const queue = [];\n  let time = 0;\n  while (heap.length || queue.length) {\n    time++;\n    if (heap.length) {\n      let cnt = heap.pop() - 1;\n      if (cnt > 0) queue.push([cnt, time + n]);\n    }\n    if (queue.length && queue[0][1] === time) {\n      heap.push(queue.shift()[0]);\n    }\n  }\n  return time;\n}",
+        "explanation": "Max-heap processes most frequent tasks first. After executing a task, it goes into a cooldown queue for n time units. When cooldown expires, push back into heap. Time O(m log m) where m = unique tasks. Space O(m)."
+      }
+    ]
+  }
+]

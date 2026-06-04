@@ -1,0 +1,35 @@
+.topic-badge {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.diff-badge {
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.diff-badge.easy {
+  background: rgba(63, 185, 80, 0.14);
+  color: var(--easy);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+.diff-badge.medium {
+  background: rgba(210, 153, 34, 0.14);
+  color: var(--medium);
+  border: 1px solid rgba(210, 153, 34, 0.3);
+}
+
+.diff-badge.hard {
+  background: rgba(248, 81, 73, 0.14);
+  color: var(--hard);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}

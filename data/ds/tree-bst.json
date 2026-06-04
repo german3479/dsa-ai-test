@@ -1,0 +1,87 @@
+[
+  {
+    "id": "tree-1",
+    "name": "Tree Traversals (DFS)",
+    "description": "Visiting every node in a tree in a specific order. In-order (left, root, right) visits nodes in sorted order for BSTs. Pre-order (root, left, right) is used for copying/serializing trees. Post-order (left, right, root) is used for deletion or evaluating expressions.",
+    "examples": [
+      {
+        "title": "Example 1: In-Order Traversal (Sorted Order for BST)",
+        "code": "function inorderTraversal(root) {\n  const result = [];\n\n  function dfs(node) {\n    if (!node) return;\n    dfs(node.left);\n    result.push(node.val);\n    dfs(node.right);\n  }\n\n  dfs(root);\n  return result;\n}\n\n// Iterative version using explicit stack:\nfunction inorderIterative(root) {\n  const result = [];\n  const stack = [];\n  let current = root;\n\n  while (current || stack.length) {\n    while (current) {\n      stack.push(current);\n      current = current.left;\n    }\n    current = stack.pop();\n    result.push(current.val);\n    current = current.right;\n  }\n  return result;\n}",
+        "explanation": "Recursive: base case null, visit left, process root, visit right. Iterative: push all left nodes, then pop and process, then go right. Both return [1,2,3,4,5] for a BST. Time O(n), Space O(h) for recursion stack or explicit stack."
+      },
+      {
+        "title": "Example 2: Pre-Order Traversal (Root First)",
+        "code": "function preorderTraversal(root) {\n  const result = [];\n\n  function dfs(node) {\n    if (!node) return;\n    result.push(node.val); // root\n    dfs(node.left);        // left\n    dfs(node.right);       // right\n  }\n\n  dfs(root);\n  return result;\n}\n\n// Iterative version:\nfunction preorderIterative(root) {\n  if (!root) return [];\n  const result = [];\n  const stack = [root];\n\n  while (stack.length) {\n    const node = stack.pop();\n    result.push(node.val);\n    // Push right first so left is processed first\n    if (node.right) stack.push(node.right);\n    if (node.left) stack.push(node.left);\n  }\n  return result;\n}",
+        "explanation": "Pre-order processes root before children. Used for serializing a tree (root, then left subtree, then right subtree). Iterative version must push right child before left so left is popped first. Time O(n), Space O(h)."
+      }
+    ]
+  },
+  {
+    "id": "tree-2",
+    "name": "BST Validation",
+    "description": "Checks if a binary tree satisfies the BST property: left subtree values < node value < right subtree values. Must validate that ALL nodes in left subtree are smaller, not just immediate children.",
+    "examples": [
+      {
+        "title": "Example 1: Recursive with Min/Max Bounds",
+        "code": "function isValidBST(root) {\n  function validate(node, min, max) {\n    if (!node) return true;\n\n    // Current node must be within bounds\n    if (min !== null && node.val <= min) return false;\n    if (max !== null && node.val >= max) return false;\n\n    // Left subtree: max bound = current node value\n    // Right subtree: min bound = current node value\n    return (\n      validate(node.left, min, node.val) &&\n      validate(node.right, node.val, max)\n    );\n  }\n\n  return validate(root, null, null);\n}",
+        "explanation": "Each recursive call tracks valid range (min, max). Left child inherits same min but gets new max = parent.val. Right child inherits same max but gets new min = parent.val. Time O(n), Space O(h) for call stack."
+      },
+      {
+        "title": "Example 2: In-Order Validation (Check Sorted Order)",
+        "code": "function isValidBSTInOrder(root) {\n  let prev = null;\n\n  function inOrder(node) {\n    if (!node) return true;\n    \n    if (!inOrder(node.left)) return false;\n    \n    // Current value must be greater than previous\n    if (prev !== null && node.val <= prev) return false;\n    prev = node.val;\n    \n    return inOrder(node.right);\n  }\n\n  return inOrder(root);\n}\n\n// Also works: check if in-order traversal produces sorted array",
+        "explanation": "BST in-order traversal produces a sorted sequence. Track previous value during traversal; if current <= previous, it's invalid. Space O(1) extra besides call stack. Time O(n), Space O(h)."
+      }
+    ]
+  },
+  {
+    "id": "tree-3",
+    "name": "Lowest Common Ancestor (LCA)",
+    "description": "Finds the lowest (deepest) node that is an ancestor of two given nodes. In a BST, can be solved iteratively using BST ordering. In a general binary tree, use recursive DFS.",
+    "examples": [
+      {
+        "title": "Example 1: LCA in BST (Iterative)",
+        "code": "function lowestCommonAncestorBST(root, p, q) {\n  let current = root;\n\n  while (current) {\n    // Both p and q are in right subtree\n    if (p.val > current.val && q.val > current.val) {\n      current = current.right;\n    }\n    // Both p and q are in left subtree\n    else if (p.val < current.val && q.val < current.val) {\n      current = current.left;\n    }\n    // Current node is the split point — this is LCA\n    else {\n      return current;\n    }\n  }\n  return null;\n}\n\n// Usage: LCA of 2 and 8 in BST [6,2,8,0,4,7,9] = 6",
+        "explanation": "Leverages BST property: if both values are greater, go right; if both smaller, go left. The split point (one on each side) is the LCA. Time O(h), Space O(1)."
+      },
+      {
+        "title": "Example 2: LCA in General Binary Tree (Recursive)",
+        "code": "function lowestCommonAncestor(root, p, q) {\n  if (!root || root === p || root === q) return root;\n\n  const left = lowestCommonAncestor(root.left, p, q);\n  const right = lowestCommonAncestor(root.right, p, q);\n\n  // If both sides return non-null, current is LCA\n  if (left && right) return root;\n  // Otherwise return the non-null side\n  return left || right;\n}\n\n// Example tree: [3,5,1,6,2,0,8,null,null,7,4]\n// LCA(5, 1) = 3, LCA(5, 4) = 5",
+        "explanation": "Recurse left and right. If both return non-null, current node is LCA (p and q are on different sides). If only one returns non-null, that's the LCA (both on same side, or one IS the LCA). Time O(n), Space O(h)."
+      }
+    ]
+  },
+  {
+    "id": "tree-4",
+    "name": "Maximum Depth & Height",
+    "description": "Calculates the longest path from root to leaf (depth) or longest path between any two nodes (diameter). Foundation for many tree problems involving height, balance, or longest path.",
+    "examples": [
+      {
+        "title": "Example 1: Maximum Depth of Binary Tree",
+        "code": "function maxDepth(root) {\n  if (!root) return 0;\n  \n  const leftDepth = maxDepth(root.left);\n  const rightDepth = maxDepth(root.right);\n  \n  return Math.max(leftDepth, rightDepth) + 1;\n}\n\n// BFS alternative (level-order):\nfunction maxDepthBFS(root) {\n  if (!root) return 0;\n  let depth = 0;\n  const queue = [root];\n\n  while (queue.length) {\n    depth++;\n    const levelSize = queue.length;\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue.shift();\n      if (node.left) queue.push(node.left);\n      if (node.right) queue.push(node.right);\n    }\n  }\n  return depth;\n}",
+        "explanation": "Recursive: max of left and right depths + 1 for current node. BFS: count levels. Both O(n) time. Recursive uses O(h) stack space, BFS uses O(width) queue space."
+      },
+      {
+        "title": "Example 2: Diameter of Binary Tree",
+        "code": "function diameterOfBinaryTree(root) {\n  let maxDiameter = 0;\n\n  function height(node) {\n    if (!node) return 0;\n    \n    const leftHeight = height(node.left);\n    const rightHeight = height(node.right);\n    \n    // Diameter through current node\n    const diameter = leftHeight + rightHeight;\n    maxDiameter = Math.max(maxDiameter, diameter);\n    \n    // Return height for parent's calculation\n    return Math.max(leftHeight, rightHeight) + 1;\n  }\n\n  height(root);\n  return maxDiameter;\n}\n\n// Usage: diameterOfBinaryTree([1,2,3,4,5]) = 3 (path 4-2-1-3)",
+        "explanation": "Diameter = longest path between any two nodes. At each node, diameter = leftHeight + rightHeight. Track global max while computing heights. Time O(n), Space O(h)."
+      }
+    ]
+  },
+  {
+    "id": "tree-5",
+    "name": "Invert / Mirror Binary Tree",
+    "description": "Swaps left and right children at every node. Classic problem that tests understanding of tree traversal order and recursion. Can be solved recursively or iteratively (BFS or DFS).",
+    "examples": [
+      {
+        "title": "Example 1: Recursive Invert",
+        "code": "function invertTree(root) {\n  if (!root) return null;\n\n  // Swap left and right subtrees\n  const temp = root.left;\n  root.left = root.right;\n  root.right = temp;\n\n  // Recursively invert subtrees\n  invertTree(root.left);\n  invertTree(root.right);\n\n  return root;\n}\n\n// One-liner:\nfunction invertTreeShort(root) {\n  if (!root) return null;\n  [root.left, root.right] = [invertTree(root.right), invertTree(root.left)];\n  return root;\n}",
+        "explanation": "Swap children, then recursively invert each subtree. Base case: null node returns null. Time O(n) — visits each node once. Space O(h) for call stack."
+      },
+      {
+        "title": "Example 2: Iterative BFS Invert",
+        "code": "function invertTreeIterative(root) {\n  if (!root) return null;\n  const queue = [root];\n\n  while (queue.length) {\n    const node = queue.shift();\n\n    // Swap children\n    [node.left, node.right] = [node.right, node.left];\n\n    if (node.left) queue.push(node.left);\n    if (node.right) queue.push(node.right);\n  }\n\n  return root;\n}\n\n// Iterative DFS alternative:\nfunction invertTreeDFS(root) {\n  if (!root) return null;\n  const stack = [root];\n\n  while (stack.length) {\n    const node = stack.pop();\n    [node.left, node.right] = [node.right, node.left];\n    if (node.left) stack.push(node.left);\n    if (node.right) stack.push(node.right);\n  }\n  return root;\n}",
+        "explanation": "BFS: level-order, swap children at each level. DFS: use stack, swap and push children. Both achieve same result. Iterative avoids recursion depth limits for very deep trees. Time O(n), Space O(width) for BFS or O(h) for DFS."
+      }
+    ]
+  }
+]

@@ -1,0 +1,21 @@
+:root {
+  --bg: #0f1115;
+  --panel: #161b22;
+  --panel-2: #1c2129;
+  --border: #2d333b;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --easy: #3fb950;
+  --medium: #d29922;
+  --hard: #f85149;
+  --accent: #2f81f7;
+  --accent-2: #388bfd;
+  --purple: #a371f7;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition-fast: 0.12s ease;
+  --transition-med: 0.2s ease;
+}

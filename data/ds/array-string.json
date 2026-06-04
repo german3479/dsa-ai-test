@@ -1,0 +1,70 @@
+[
+  {
+    "id": "arr-1",
+    "name": "Two Pointers",
+    "description": "Uses two indices moving through an array (usually from both ends or at different speeds) to solve problems in O(n) time without extra space. Commonly used for sorted arrays, pair-finding, and linked list cycle detection.",
+    "examples": [
+      {
+        "title": "Example 1: Two Sum (Sorted Array)",
+        "code": "function twoSumSorted(nums, target) {\n  let left = 0;\n  let right = nums.length - 1;\n\n  while (left < right) {\n    const sum = nums[left] + nums[right];\n    if (sum === target) return [left, right];\n    if (sum < target) left++;\n    else right--;\n  }\n  return [];\n}",
+        "explanation": "Since the array is sorted, moving left increases the sum, moving right decreases it. Time O(n), Space O(1)."
+      },
+      {
+        "title": "Example 2: Remove Duplicates In-Place",
+        "code": "function removeDuplicates(nums) {\n  if (nums.length === 0) return 0;\n  let slow = 0;\n\n  for (let fast = 1; fast < nums.length; fast++) {\n    if (nums[fast] !== nums[slow]) {\n      slow++;\n      nums[slow] = nums[fast];\n    }\n  }\n  return slow + 1;\n}",
+        "explanation": "Slow pointer tracks the position to write the next unique element. Fast pointer scans ahead. Time O(n), Space O(1)."
+      }
+    ]
+  },
+  {
+    "id": "arr-2",
+    "name": "Sliding Window",
+    "description": "Maintains a window (subarray/substring) that slides through the data structure, expanding and contracting based on a condition. Used for substring, subarray, and contiguous segment problems in O(n) time.",
+    "examples": [
+      {
+        "title": "Example 1: Longest Substring Without Repeating Characters",
+        "code": "function lengthOfLongestSubstring(s) {\n  const charSet = new Set();\n  let left = 0;\n  let maxLen = 0;\n\n  for (let right = 0; right < s.length; right++) {\n    while (charSet.has(s[right])) {\n      charSet.delete(s[left]);\n      left++;\n    }\n    charSet.add(s[right]);\n    maxLen = Math.max(maxLen, right - left + 1);\n  }\n  return maxLen;\n}",
+        "explanation": "Expand window with right pointer. When duplicate found, shrink from left until valid. Time O(n), Space O(min(m,n))."
+      },
+      {
+        "title": "Example 2: Maximum Sum of Size K Subarray",
+        "code": "function maxSumSubarray(nums, k) {\n  let windowSum = 0;\n  let maxSum = -Infinity;\n\n  for (let i = 0; i < nums.length; i++) {\n    windowSum += nums[i];\n    if (i >= k - 1) {\n      maxSum = Math.max(maxSum, windowSum);\n      windowSum -= nums[i - k + 1];\n    }\n  }\n  return maxSum;\n}",
+        "explanation": "Maintain a fixed-size window. Add new element, remove the one leaving the window. Time O(n), Space O(1)."
+      }
+    ]
+  },
+  {
+    "id": "arr-3",
+    "name": "Prefix Sum / Prefix Array",
+    "description": "Precomputes cumulative sums (or products) into an array so that range queries can be answered in O(1) time. Reduces range-sum problems from O(n^2) to O(n).",
+    "examples": [
+      {
+        "title": "Example 1: Range Sum Query",
+        "code": "function buildPrefixSum(nums) {\n  const prefix = [0];\n  for (let i = 0; i < nums.length; i++) {\n    prefix[i + 1] = prefix[i] + nums[i];\n  }\n  return prefix;\n}\n\nfunction rangeSum(prefix, left, right) {\n  return prefix[right + 1] - prefix[left];\n}",
+        "explanation": "prefix[i] stores sum of nums[0..i-1]. Range sum from left to right is prefix[right+1] - prefix[left]. Build O(n), query O(1)."
+      },
+      {
+        "title": "Example 2: Product of Array Except Self",
+        "code": "function productExceptSelf(nums) {\n  const n = nums.length;\n  const result = new Array(n).fill(1);\n\n  let leftProduct = 1;\n  for (let i = 0; i < n; i++) {\n    result[i] = leftProduct;\n    leftProduct *= nums[i];\n  }\n\n  let rightProduct = 1;\n  for (let i = n - 1; i >= 0; i--) {\n    result[i] *= rightProduct;\n    rightProduct *= nums[i];\n  }\n  return result;\n}",
+        "explanation": "Left pass stores product of elements to the left. Right pass multiplies by product of elements to the right. Time O(n), Space O(1) excluding output."
+      }
+    ]
+  },
+  {
+    "id": "arr-4",
+    "name": "Palindrome & String Manipulation",
+    "description": "String problems involving palindrome checking, reversal, or character-by-character processing. Often solved with two pointers or by converting to arrays for manipulation.",
+    "examples": [
+      {
+        "title": "Example 1: Valid Palindrome (ignoring non-alphanumeric)",
+        "code": "function isPalindrome(s) {\n  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let left = 0;\n  let right = cleaned.length - 1;\n\n  while (left < right) {\n    if (cleaned[left] !== cleaned[right]) return false;\n    left++;\n    right--;\n  }\n  return true;\n}",
+        "explanation": "Clean string first, then use two pointers moving inward. Time O(n), Space O(n) for cleaned string (or O(1) if processed in-place)."
+      },
+      {
+        "title": "Example 2: Longest Palindromic Substring (Expand Around Center)",
+        "code": "function longestPalindrome(s) {\n  let start = 0;\n  let maxLen = 0;\n\n  function expand(left, right) {\n    while (left >= 0 && right < s.length && s[left] === s[right]) {\n      left--;\n      right++;\n    }\n    return right - left - 1;\n  }\n\n  for (let i = 0; i < s.length; i++) {\n    const odd = expand(i, i);\n    const even = expand(i, i + 1);\n    const len = Math.max(odd, even);\n    if (len > maxLen) {\n      maxLen = len;\n      start = i - Math.floor((len - 1) / 2);\n    }\n  }\n  return s.slice(start, start + maxLen);\n}",
+        "explanation": "Treat each character (and gap between characters) as a palindrome center and expand outward. Time O(n^2), Space O(1)."
+      }
+    ]
+  }
+]

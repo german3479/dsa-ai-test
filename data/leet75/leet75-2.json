@@ -1,0 +1,371 @@
+[
+  {
+    "id": 16,
+    "title": "Search in Rotated Sorted Array",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Binary Search"
+    ],
+    "description": "Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.",
+    "examples": [
+      {
+        "input": "nums = [4,5,6,7,0,1,2], target = 0",
+        "output": "4"
+      },
+      {
+        "input": "nums = [4,5,6,7,0,1,2], target = 3",
+        "output": "-1"
+      }
+    ],
+    "starter": "function search(nums, target) {\n    // Your code here\n}",
+    "optimalSolution": "function search(nums, target) {\n  let l = 0, r = nums.length - 1;\n  while (l <= r) {\n    const mid = (l + r) >> 1;\n    if (nums[mid] === target) return mid;\n    if (nums[l] <= nums[mid]) {\n      if (nums[l] <= target && target < nums[mid]) r = mid - 1;\n      else l = mid + 1;\n    } else {\n      if (nums[mid] < target && target <= nums[r]) l = mid + 1;\n      else r = mid - 1;\n    }\n  }\n  return -1;\n}",
+    "optimalTime": "O(log n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Binary Search"
+  },
+  {
+    "id": 17,
+    "title": "Invert Binary Tree",
+    "difficulty": "easy",
+    "topics": [
+      "Tree",
+      "DFS",
+      "BFS",
+      "Recursion"
+    ],
+    "description": "Given the root of a binary tree, invert the tree, and return its root.",
+    "examples": [
+      {
+        "input": "root = [4,2,7,1,3,6,9]",
+        "output": "[4,7,2,9,6,3,1]"
+      }
+    ],
+    "starter": "function invertTree(root) {\n    // Your code here\n}",
+    "optimalSolution": "function invertTree(root) {\n  if (!root) return null;\n  [root.left, root.right] = [invertTree(root.right), invertTree(root.left)];\n  return root;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(h)",
+    "pattern": "DFS / BFS"
+  },
+  {
+    "id": 18,
+    "title": "Validate Binary Search Tree",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "DFS",
+      "Recursion",
+      "BST"
+    ],
+    "description": "Given the root of a binary tree, determine if it is a valid binary search tree (BST).",
+    "examples": [
+      {
+        "input": "root = [2,1,3]",
+        "output": "true"
+      },
+      {
+        "input": "root = [5,1,4,null,null,3,6]",
+        "output": "false"
+      }
+    ],
+    "starter": "function isValidBST(root) {\n    // Your code here\n}",
+    "optimalSolution": "function isValidBST(root) {\n  const dfs = (node, lo, hi) => {\n    if (!node) return true;\n    if (node.val <= lo || node.val >= hi) return false;\n    return dfs(node.left, lo, node.val) && dfs(node.right, node.val, hi);\n  };\n  return dfs(root, -Infinity, Infinity);\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "In-order Traversal"
+  },
+  {
+    "id": 19,
+    "title": "Maximum Depth of Binary Tree",
+    "difficulty": "easy",
+    "topics": [
+      "Tree",
+      "DFS",
+      "Recursion",
+      "BFS"
+    ],
+    "description": "Given the root of a binary tree, return its maximum depth.",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "3"
+      },
+      {
+        "input": "root = [1,null,2]",
+        "output": "2"
+      }
+    ],
+    "starter": "function maxDepth(root) {\n    // Your code here\n}",
+    "optimalSolution": "function maxDepth(root) {\n  if (!root) return 0;\n  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(h)",
+    "pattern": "DFS / BFS"
+  },
+  {
+    "id": 20,
+    "title": "Climbing Stairs",
+    "difficulty": "easy",
+    "topics": [
+      "Math",
+      "DP",
+      "Memoization"
+    ],
+    "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+    "examples": [
+      {
+        "input": "n = 2",
+        "output": "2"
+      },
+      {
+        "input": "n = 3",
+        "output": "3"
+      }
+    ],
+    "starter": "function climbStairs(n) {\n    // Your code here\n}",
+    "optimalSolution": "function climbStairs(n) {\n  if (n <= 2) return n;\n  let a = 1, b = 2;\n  for (let i = 3; i <= n; i++) [a, b] = [b, a + b];\n  return b;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Fibonacci / DP"
+  },
+  {
+    "id": 21,
+    "title": "Course Schedule",
+    "difficulty": "medium",
+    "topics": [
+      "Graph",
+      "DFS",
+      "BFS",
+      "Topological Sort"
+    ],
+    "description": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. Return true if you can finish all courses. Otherwise, return false.",
+    "examples": [
+      {
+        "input": "numCourses = 2, prerequisites = [[1,0]]",
+        "output": "true"
+      },
+      {
+        "input": "numCourses = 2, prerequisites = [[1,0],[0,1]]",
+        "output": "false"
+      }
+    ],
+    "starter": "function canFinish(numCourses, prerequisites) {\n    // Your code here\n}",
+    "optimalSolution": "function canFinish(numCourses, prerequisites) {\n  const graph = Array.from({ length: numCourses }, () => []);\n  const indeg = new Array(numCourses).fill(0);\n  for (const [a, b] of prerequisites) {\n    graph[b].push(a);\n    indeg[a]++;\n  }\n  const q = [];\n  for (let i = 0; i < numCourses; i++) if (!indeg[i]) q.push(i);\n  let count = 0;\n  while (q.length) {\n    const u = q.shift();\n    count++;\n    for (const v of graph[u]) if (--indeg[v] === 0) q.push(v);\n  }\n  return count === numCourses;\n}",
+    "optimalTime": "O(V + E)",
+    "optimalSpace": "O(V + E)",
+    "pattern": "DFS / BFS / Topological Sort"
+  },
+  {
+    "id": 22,
+    "title": "Number of Islands",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DFS",
+      "BFS",
+      "Graph",
+      "Matrix"
+    ],
+    "description": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.",
+    "examples": [
+      {
+        "input": "grid = [['1','1','1','1','0'],['1','1','0','1','0'],['1','1','0','0','0'],['0','0','0','0','0']]",
+        "output": "1"
+      }
+    ],
+    "starter": "function numIslands(grid) {\n    // Your code here\n}",
+    "optimalSolution": "function numIslands(grid) {\n  const m = grid.length, n = grid[0].length;\n  let count = 0;\n  const dfs = (i, j) => {\n    if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] === '0') return;\n    grid[i][j] = '0';\n    dfs(i + 1, j); dfs(i - 1, j); dfs(i, j + 1); dfs(i, j - 1);\n  };\n  for (let i = 0; i < m; i++)\n    for (let j = 0; j < n; j++)\n      if (grid[i][j] === '1') { count++; dfs(i, j); }\n  return count;\n}",
+    "optimalTime": "O(m * n)",
+    "optimalSpace": "O(m * n)",
+    "pattern": "DFS / BFS"
+  },
+  {
+    "id": 23,
+    "title": "Reverse Linked List",
+    "difficulty": "easy",
+    "topics": [
+      "Linked List",
+      "Recursion"
+    ],
+    "description": "Given the head of a singly linked list, reverse the list, and return the reversed list.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4,5]",
+        "output": "[5,4,3,2,1]"
+      },
+      {
+        "input": "head = [1,2]",
+        "output": "[2,1]"
+      },
+      {
+        "input": "head = []",
+        "output": "[]"
+      }
+    ],
+    "starter": "function reverseList(head) {\n    // Your code here\n}",
+    "optimalSolution": "function reverseList(head) {\n  let prev = null, curr = head;\n  while (curr) {\n    const nxt = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = nxt;\n  }\n  return prev;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Linked List Iteration"
+  },
+  {
+    "id": 24,
+    "title": "Lowest Common Ancestor of a BST",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "BST",
+      "DFS",
+      "Recursion"
+    ],
+    "description": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.",
+    "examples": [
+      {
+        "input": "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8",
+        "output": "6"
+      }
+    ],
+    "starter": "function lowestCommonAncestor(root, p, q) {\n    // Your code here\n}",
+    "optimalSolution": "function lowestCommonAncestor(root, p, q) {\n  if (!root) return null;\n  if (p.val < root.val && q.val < root.val) return lowestCommonAncestor(root.left, p, q);\n  if (p.val > root.val && q.val > root.val) return lowestCommonAncestor(root.right, p, q);\n  return root;\n}",
+    "optimalTime": "O(h)",
+    "optimalSpace": "O(1)",
+    "pattern": "BST Traversal"
+  },
+  {
+    "id": 25,
+    "title": "Valid Sudoku",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Matrix"
+    ],
+    "description": "Determine if a 9 x 9 Sudoku board is valid.",
+    "examples": [
+      {
+        "input": "board = [['5','3','.','.','7','.','.','.','.'],['6','.','.','1','9','5','.','.','.'],['.','9','8','.','.','.','.','6','.'],['8','.','.','.','6','.','.','.','3'],['4','.','.','8','.','3','.','.','1'],['7','.','.','.','2','.','.','.','6'],['.','6','.','.','.','.','2','8','.'],['.','.','.','4','1','9','.','.','5'],['.','.','.','.','8','.','.','7','9']]",
+        "output": "true"
+      }
+    ],
+    "starter": "function isValidSudoku(board) {\n    // Your code here\n}",
+    "optimalSolution": "function isValidSudoku(board) {\n  const rows = Array.from({ length: 9 }, () => new Set());\n  const cols = Array.from({ length: 9 }, () => new Set());\n  const boxes = Array.from({ length: 9 }, () => new Set());\n  for (let i = 0; i < 9; i++) {\n    for (let j = 0; j < 9; j++) {\n      const c = board[i][j];\n      if (c === '.') continue;\n      const k = (i / 3 | 0) * 3 + (j / 3 | 0);\n      if (rows[i].has(c) || cols[j].has(c) || boxes[k].has(c)) return false;\n      rows[i].add(c); cols[j].add(c); boxes[k].add(c);\n    }\n  }\n  return true;\n}",
+    "optimalTime": "O(9^2)",
+    "optimalSpace": "O(9*3)",
+    "pattern": "Hash Table"
+  },
+  {
+    "id": 26,
+    "title": "Longest Palindromic Substring",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP"
+    ],
+    "description": "Given a string s, return the longest palindromic substring in s.",
+    "examples": [
+      {
+        "input": "s = 'babad'",
+        "output": "'bab'"
+      },
+      {
+        "input": "s = 'cbbd'",
+        "output": "'bb'"
+      }
+    ],
+    "starter": "function longestPalindrome(s) {\n    // Your code here\n}",
+    "optimalSolution": "function longestPalindrome(s) {\n  if (s.length < 2) return s;\n  let start = 0, maxLen = 1;\n  const expand = (l, r) => {\n    while (l >= 0 && r < s.length && s[l] === s[r]) {\n      if (r - l + 1 > maxLen) { start = l; maxLen = r - l + 1; }\n      l--; r++;\n    }\n  };\n  for (let i = 0; i < s.length; i++) {\n    expand(i, i);\n    expand(i, i + 1);\n  }\n  return s.slice(start, start + maxLen);\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(1)",
+    "pattern": "Expand Around Center"
+  },
+  {
+    "id": 27,
+    "title": "Rotate Image",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Matrix"
+    ],
+    "description": "You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).",
+    "examples": [
+      {
+        "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+        "output": "[[7,4,1],[8,5,2],[9,6,3]]"
+      }
+    ],
+    "starter": "function rotate(matrix) {\n    // Your code here\n}",
+    "optimalSolution": "function rotate(matrix) {\n  const n = matrix.length;\n  for (let i = 0; i < n; i++)\n    for (let j = i + 1; j < n; j++)\n      [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];\n  for (let i = 0; i < n; i++) matrix[i].reverse();\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(1)",
+    "pattern": "In-place Transpose + Reverse"
+  },
+  {
+    "id": 28,
+    "title": "Word Break",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP",
+      "Hash Table",
+      "Trie"
+    ],
+    "description": "Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.",
+    "examples": [
+      {
+        "input": "s = 'leetcode', wordDict = ['leet','code']",
+        "output": "true"
+      }
+    ],
+    "starter": "function wordBreak(s, wordDict) {\n    // Your code here\n}",
+    "optimalSolution": "function wordBreak(s, wordDict) {\n  const set = new Set(wordDict);\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++)\n    for (let j = 0; j < i; j++)\n      if (dp[j] && set.has(s.slice(j, i))) { dp[i] = true; break; }\n  return dp[n];\n}",
+    "optimalTime": "O(n^3)",
+    "optimalSpace": "O(n)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 29,
+    "title": "Sort Colors",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Sorting",
+      "Two Pointers"
+    ],
+    "description": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent.",
+    "examples": [
+      {
+        "input": "nums = [2,0,2,1,1,0]",
+        "output": "[0,0,1,1,2,2]"
+      }
+    ],
+    "starter": "function sortColors(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function sortColors(nums) {\n  let l = 0, i = 0, r = nums.length - 1;\n  while (i <= r) {\n    if (nums[i] === 0) [nums[l++], nums[i++]] = [nums[i], nums[l]];\n    else if (nums[i] === 2) [nums[r--], nums[i]] = [nums[i], nums[r]];\n    else i++;\n  }\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Dutch National Flag"
+  },
+  {
+    "id": 30,
+    "title": "Insert Interval",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Sorting"
+    ],
+    "description": "You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval. Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).",
+    "examples": [
+      {
+        "input": "intervals = [[1,3],[6,9]], newInterval = [2,5]",
+        "output": "[[1,5],[6,9]]"
+      },
+      {
+        "input": "intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]",
+        "output": "[[1,2],[3,10],[12,16]]"
+      }
+    ],
+    "starter": "function insert(intervals, newInterval) {\n    // Your code here\n}",
+    "optimalSolution": "function insert(intervals, newInterval) {\n  const res = [];\n  let [newL, newR] = newInterval, i = 0;\n  while (i < intervals.length && intervals[i][1] < newL) res.push(intervals[i++]);\n  while (i < intervals.length && intervals[i][0] <= newR) {\n    newL = Math.min(newL, intervals[i][0]);\n    newR = Math.max(newR, intervals[i][1]);\n    i++;\n  }\n  res.push([newL, newR]);\n  while (i < intervals.length) res.push(intervals[i++]);\n  return res;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Interval Merge"
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "id": "sq-1",
+    "name": "Stack (LIFO)",
+    "description": "Last-In-First-Out structure. Used for backtracking, DFS, parentheses validation, and expression parsing. In JavaScript, stacks are typically implemented using arrays with push() and pop().",
+    "examples": [
+      {
+        "title": "Example 1: Valid Parentheses",
+        "code": "function isValid(s) {\n  const stack = [];\n  const bracketMap = {\n    '(': ')',\n    '{': '}',\n    '[': ']'\n  };\n\n  for (const char of s) {\n    if (bracketMap[char]) {\n      // Opening bracket — push to stack\n      stack.push(char);\n    } else {\n      // Closing bracket — must match last opening\n      const lastOpen = stack.pop();\n      if (bracketMap[lastOpen] !== char) {\n        return false;\n      }\n    }\n  }\n\n  return stack.length === 0;\n}",
+        "explanation": "Push opening brackets onto the stack. For closing brackets, pop the last opening and check if they match. At the end, stack must be empty for a valid string. Time O(n), Space O(n)."
+      },
+      {
+        "title": "Example 2: Basic Stack Implementation",
+        "code": "class Stack {\n  constructor() {\n    this.items = [];\n  }\n\n  push(item) {\n    this.items.push(item);\n  }\n\n  pop() {\n    if (this.isEmpty()) return null;\n    return this.items.pop();\n  }\n\n  peek() {\n    return this.items[this.items.length - 1];\n  }\n\n  isEmpty() {\n    return this.items.length === 0;\n  }\n\n  size() {\n    return this.items.length;\n  }\n}",
+        "explanation": "Standard Stack implementation using JS Array. push() and pop() are O(1) amortized. peek() looks at top without removing. All core operations run in constant time."
+      }
+    ]
+  },
+  {
+    "id": "sq-2",
+    "name": "Queue (FIFO)",
+    "description": "First-In-First-Out structure. Used for BFS, level-order traversal, and task scheduling. In JavaScript, queues are typically implemented using arrays with push() and shift(), though shift() is O(n).",
+    "examples": [
+      {
+        "title": "Example 1: Basic Queue Implementation",
+        "code": "class Queue {\n  constructor() {\n    this.items = [];\n  }\n\n  enqueue(item) {\n    this.items.push(item);\n  }\n\n  dequeue() {\n    if (this.isEmpty()) return null;\n    return this.items.shift();\n  }\n\n  peek() {\n    return this.items[0];\n  }\n\n  isEmpty() {\n    return this.items.length === 0;\n  }\n\n  size() {\n    return this.items.length;\n  }\n}",
+        "explanation": "Standard Queue implementation. enqueue() adds to end (O(1)), dequeue() removes from front (O(n) due to array shift). For production with large queues, use a linked list or circular buffer to achieve true O(1) dequeue."
+      },
+      {
+        "title": "Example 2: BFS Level Order Traversal",
+        "code": "function levelOrder(root) {\n  if (!root) return [];\n  const result = [];\n  const queue = [root];\n\n  while (queue.length > 0) {\n    const levelSize = queue.length;\n    const currentLevel = [];\n\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue.shift();\n      currentLevel.push(node.val);\n      if (node.left) queue.push(node.left);\n      if (node.right) queue.push(node.right);\n    }\n\n    result.push(currentLevel);\n  }\n  return result;\n}",
+        "explanation": "Uses a queue to process tree nodes level by level. The inner for-loop ensures only nodes from the current level are processed before moving to the next. Time O(n), Space O(n) for the queue."
+      }
+    ]
+  },
+  {
+    "id": "sq-3",
+    "name": "Monotonic Stack",
+    "description": "A stack that maintains elements in monotonic order (either increasing or decreasing). Used for finding next greater/smaller element, sliding window maximum, and histogram area problems.",
+    "examples": [
+      {
+        "title": "Example 1: Next Greater Element",
+        "code": "function nextGreaterElement(nums) {\n  const result = new Array(nums.length).fill(-1);\n  const stack = []; // stores indices\n\n  for (let i = 0; i < nums.length; i++) {\n    // Current element is 'greater' than elements on stack\n    while (stack.length && nums[i] > nums[stack[stack.length - 1]]) {\n      const index = stack.pop();\n      result[index] = nums[i];\n    }\n    stack.push(i);\n  }\n  return result;\n}\n\n// Usage:\n// nextGreaterElement([2, 1, 5, 3, 6, 4])\n// Returns: [5, 5, 6, 6, -1, -1]",
+        "explanation": "Stack stores indices of elements waiting for their 'next greater'. When current element is greater than stack top, we found the answer for that index. Each element is pushed and popped at most once. Time O(n), Space O(n)."
+      },
+      {
+        "title": "Example 2: Valid Parentheses with Stack",
+        "code": "function isValid(s) {\n  const stack = [];\n\n  for (const char of s) {\n    if (char === '(' || char === '{' || char === '[') {\n      stack.push(char);\n    } else {\n      const last = stack.pop();\n      if (\n        (char === ')' && last !== '(') ||\n        (char === '}' && last !== '{') ||\n        (char === ']' && last !== '[')\n      ) {\n        return false;\n      }\n    }\n  }\n  return stack.length === 0;\n}",
+        "explanation": "Purely stack-based approach. Opening brackets pushed, closing brackets must match the most recent opening. If stack isn't empty at the end, there are unmatched openings. Time O(n), Space O(n)."
+      }
+    ]
+  }
+]

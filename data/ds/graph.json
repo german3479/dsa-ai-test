@@ -1,0 +1,121 @@
+[
+  {
+    "id": "graph-1",
+    "name": "Graph Representation (Adjacency List)",
+    "description": "The most common way to represent a graph in JavaScript interviews. An adjacency list stores each node's neighbors in an object or Map, enabling O(1) neighbor access and O(V + E) traversal.",
+    "examples": [
+      {
+        "title": "Example 1: Build Adjacency List from Edge List",
+        "code": "function buildAdjList(edges) {\n  const graph = {};\n  for (const [u, v] of edges) {\n    if (!graph[u]) graph[u] = [];\n    if (!graph[v]) graph[v] = [];\n    graph[u].push(v);\n    graph[v].push(u); // remove for directed graph\n  }\n  return graph;\n}\n\n// Usage\nconst edges = [[0,1],[0,2],[1,3],[2,3]];\nconst graph = buildAdjList(edges);\n// { '0': [1,2], '1': [0,3], '2': [0,3], '3': [1,2] }",
+        "explanation": "Iterates edges once. For undirected graphs, add both directions. Time O(E), Space O(V + E). Use Map() if node values aren't strings or numbers."
+      },
+      {
+        "title": "Example 2: Using Map() for Non-String Nodes",
+        "code": "function buildAdjListMap(edges) {\n  const graph = new Map();\n  for (const [u, v] of edges) {\n    if (!graph.has(u)) graph.set(u, []);\n    if (!graph.has(v)) graph.set(v, []);\n    graph.get(u).push(v);\n    graph.get(v).push(u);\n  }\n  return graph;\n}\n\n// Works with any node type:\nconst edges = [[{id:1}, {id:2}], [{id:1}, {id:3}]];\nconst graph = buildAdjListMap(edges);",
+        "explanation": "Map() is preferred when nodes are objects, arrays, or non-primitive types. Same O(E) build time. Iteration uses graph.keys() and graph.get(node)."
+      }
+    ]
+  },
+  {
+    "id": "graph-2",
+    "name": "DFS (Depth First Search)",
+    "description": "Explores as far down a branch as possible before backtracking. Implemented recursively or with an explicit stack. Used for path finding, cycle detection, connected components, and tree traversal.",
+    "examples": [
+      {
+        "title": "Example 1: Recursive DFS (Connected Components)",
+        "code": "function countConnectedComponents(n, edges) {\n  const graph = buildAdjList(edges);\n  const visited = new Set();\n  let count = 0;\n\n  function dfs(node) {\n    visited.add(node);\n    for (const neighbor of graph[node] || []) {\n      if (!visited.has(neighbor)) dfs(neighbor);\n    }\n  }\n\n  for (let i = 0; i < n; i++) {\n    if (!visited.has(i)) {\n      dfs(i);\n      count++;\n    }\n  }\n  return count;\n}\n\n// Usage: 5 nodes, edges [[0,1],[1,2],[3,4]]\n// Returns: 2 (two separate components)",
+        "explanation": "Recursive DFS visits each node once. For each unvisited node, a new DFS explores its whole component. Time O(V + E), Space O(V) for visited + call stack."
+      },
+      {
+        "title": "Example 2: Iterative DFS with Explicit Stack",
+        "code": "function dfsIterative(start, graph) {\n  const visited = new Set();\n  const stack = [start];\n  const result = [];\n\n  while (stack.length > 0) {\n    const node = stack.pop();\n    if (visited.has(node)) continue;\n    visited.add(node);\n    result.push(node);\n\n    // Push neighbors in reverse for left-to-right order\n    const neighbors = graph[node] || [];\n    for (let i = neighbors.length - 1; i >= 0; i--) {\n      if (!visited.has(neighbors[i])) {\n        stack.push(neighbors[i]);\n      }\n    }\n  }\n  return result;\n}\n\n// Usage\nconst graph = { 0: [1,2], 1: [0,3], 2: [0,3], 3: [1,2] };\nconsole.log(dfsIterative(0, graph)); // [0, 2, 3, 1]",
+        "explanation": "Explicit stack avoids recursion depth limits. Pop gives LIFO (depth-first). Reverse neighbor order to match recursive DFS left-to-right behavior. Time O(V + E), Space O(V)."
+      }
+    ]
+  },
+  {
+    "id": "graph-3",
+    "name": "BFS (Breadth First Search)",
+    "description": "Explores level by level using a queue. Guaranteed to find shortest paths in unweighted graphs. Used for shortest path, minimum steps, level-order traversal, and nearest neighbor problems.",
+    "examples": [
+      {
+        "title": "Example 1: Shortest Path in Unweighted Graph",
+        "code": "function shortestPath(start, target, graph) {\n  const visited = new Set([start]);\n  const queue = [[start, 0]]; // [node, distance]\n\n  while (queue.length > 0) {\n    const [node, dist] = queue.shift();\n    if (node === target) return dist;\n\n    for (const neighbor of graph[node] || []) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        queue.push([neighbor, dist + 1]);\n      }\n    }\n  }\n  return -1; // unreachable\n}\n\n// Usage\nconst graph = { 0: [1,2], 1: [0,3], 2: [0,3], 3: [1,2,4], 4: [3] };\nconsole.log(shortestPath(0, 4, graph)); // 3",
+        "explanation": "BFS explores all nodes at distance d before distance d+1. First time target is dequeued is the shortest path. Time O(V + E), Space O(V) for visited + queue."
+      },
+      {
+        "title": "Example 2: Level Order Traversal (Tree as Graph)",
+        "code": "function levelOrder(root) {\n  if (!root) return [];\n  const result = [];\n  const queue = [root];\n\n  while (queue.length > 0) {\n    const levelSize = queue.length;\n    const currentLevel = [];\n\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue.shift();\n      currentLevel.push(node.val);\n      if (node.left) queue.push(node.left);\n      if (node.right) queue.push(node.right);\n    }\n    result.push(currentLevel);\n  }\n  return result;\n}",
+        "explanation": "Trees are acyclic graphs. BFS processes all nodes at current depth before children. The inner for-loop ensures we only process one level at a time. Time O(n), Space O(width)."
+      }
+    ]
+  },
+  {
+    "id": "graph-4",
+    "name": "Number of Islands (Grid DFS/BFS)",
+    "description": "Classic grid graph problem where '1's are land and '0's are water. Count connected components of land using DFS or BFS. Demonstrates treating 2D arrays as implicit graphs.",
+    "examples": [
+      {
+        "title": "Example 1: DFS on 2D Grid",
+        "code": "function numIslands(grid) {\n  if (!grid.length) return 0;\n  const rows = grid.length;\n  const cols = grid[0].length;\n  let count = 0;\n\n  function dfs(r, c) {\n    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] !== '1') {\n      return;\n    }\n    grid[r][c] = '0'; // mark visited\n    dfs(r + 1, c);\n    dfs(r - 1, c);\n    dfs(r, c + 1);\n    dfs(r, c - 1);\n  }\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (grid[r][c] === '1') {\n        dfs(r, c);\n        count++;\n      }\n    }\n  }\n  return count;\n}\n\n// Usage\nconst grid = [\n  ['1','1','0','0','0'],\n  ['1','1','0','0','0'],\n  ['0','0','1','0','0'],\n  ['0','0','0','1','1']\n];\nconsole.log(numIslands(grid)); // 3",
+        "explanation": "Each '1' starts a DFS that floods the entire island, marking visited cells as '0'. Outer loop counts unvisited islands. Time O(m*n), Space O(m*n) worst-case call stack."
+      },
+      {
+        "title": "Example 2: BFS Alternative (No Stack Overflow Risk)",
+        "code": "function numIslandsBFS(grid) {\n  if (!grid.length) return 0;\n  const rows = grid.length;\n  const cols = grid[0].length;\n  let count = 0;\n  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (grid[r][c] !== '1') continue;\n      count++;\n      const queue = [[r, c]];\n      grid[r][c] = '0';\n\n      while (queue.length) {\n        const [cr, cc] = queue.shift();\n        for (const [dr, dc] of dirs) {\n          const nr = cr + dr;\n          const nc = cc + dc;\n          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === '1') {\n            queue.push([nr, nc]);\n            grid[nr][nc] = '0';\n          }\n        }\n      }\n    }\n  }\n  return count;\n}",
+        "explanation": "Same logic as DFS but uses a queue. Prevents call stack overflow on very large grids. Direcciones array avoids repeating boundary checks. Time O(m*n), Space O(min(m,n))."
+      }
+    ]
+  },
+  {
+    "id": "graph-5",
+    "name": "Clone Graph",
+    "description": "Creates a deep copy of an undirected connected graph. Tests understanding of graph traversal with a hash map to track original-to-clone node mapping, preventing infinite cycles.",
+    "examples": [
+      {
+        "title": "Example 1: BFS with Node Map",
+        "code": "function cloneGraph(node) {\n  if (!node) return null;\n\n  const map = new Map();\n  map.set(node, { val: node.val, neighbors: [] });\n  const queue = [node];\n\n  while (queue.length) {\n    const current = queue.shift();\n    for (const neighbor of current.neighbors) {\n      if (!map.has(neighbor)) {\n        map.set(neighbor, { val: neighbor.val, neighbors: [] });\n        queue.push(neighbor);\n      }\n      map.get(current).neighbors.push(map.get(neighbor));\n    }\n  }\n  return map.get(node);\n}",
+        "explanation": "BFS creates clone for each original node first. Then wires neighbors by looking up clones in the map. Time O(V + E), Space O(V) for the map and queue."
+      },
+      {
+        "title": "Example 2: DFS Recursive Alternative",
+        "code": "function cloneGraphDFS(node, map = new Map()) {\n  if (!node) return null;\n  if (map.has(node)) return map.get(node);\n\n  const clone = { val: node.val, neighbors: [] };\n  map.set(node, clone);\n\n  for (const neighbor of node.neighbors) {\n    clone.neighbors.push(cloneGraphDFS(neighbor, map));\n  }\n  return clone;\n}",
+        "explanation": "DFS returns immediately if node already cloned (base case + cycle guard). Recursively clones all neighbors. Time O(V + E), Space O(V) for map + call stack."
+      }
+    ]
+  },
+  {
+    "id": "graph-6",
+    "name": "Topological Sort (Course Schedule)",
+    "description": "Orders nodes in a directed acyclic graph (DAG) so that for every edge u->v, u comes before v. Used for course scheduling, dependency resolution, and detecting cycles in directed graphs.",
+    "examples": [
+      {
+        "title": "Example 1: Kahn's Algorithm (BFS / In-Degree)",
+        "code": "function canFinish(numCourses, prerequisites) {\n  const graph = {};\n  const inDegree = new Array(numCourses).fill(0);\n\n  for (const [course, prereq] of prerequisites) {\n    if (!graph[prereq]) graph[prereq] = [];\n    graph[prereq].push(course);\n    inDegree[course]++;\n  }\n\n  const queue = [];\n  for (let i = 0; i < numCourses; i++) {\n    if (inDegree[i] === 0) queue.push(i);\n  }\n\n  let processed = 0;\n  while (queue.length) {\n    const course = queue.shift();\n    processed++;\n    for (const next of graph[course] || []) {\n      inDegree[next]--;\n      if (inDegree[next] === 0) queue.push(next);\n    }\n  }\n  return processed === numCourses;\n}\n\n// Returns true if no cycle exists",
+        "explanation": "Process nodes with zero in-degree first. If a cycle exists, some nodes never reach in-degree 0. Time O(V + E), Space O(V + E)."
+      },
+      {
+        "title": "Example 2: DFS with Cycle Detection",
+        "code": "function canFinishDFS(numCourses, prerequisites) {\n  const graph = {};\n  for (const [c, p] of prerequisites) {\n    if (!graph[p]) graph[p] = [];\n    graph[p].push(c);\n  }\n\n  const visited = new Set();   // fully processed\n  const visiting = new Set();  // in current recursion stack\n\n  function dfs(node) {\n    if (visiting.has(node)) return false; // cycle found\n    if (visited.has(node)) return true;\n    visiting.add(node);\n\n    for (const neighbor of graph[node] || []) {\n      if (!dfs(neighbor)) return false;\n    }\n\n    visiting.delete(node);\n    visited.add(node);\n    return true;\n  }\n\n  for (let i = 0; i < numCourses; i++) {\n    if (!dfs(i)) return false;\n  }\n  return true;\n}",
+        "explanation": "Three-state tracking: unvisited, visiting (in stack), visited. Finding a 'visiting' node again means a cycle. Time O(V + E), Space O(V) for sets + call stack."
+      }
+    ]
+  },
+  {
+    "id": "graph-7",
+    "name": "Word Ladder (Shortest Transformation)",
+    "description": "Finds the shortest path between two words by changing one letter at a time. Classic BFS problem demonstrating preprocessing patterns and bidirectional BFS optimization.",
+    "examples": [
+      {
+        "title": "Example 1: Standard BFS with Preprocessing",
+        "code": "function ladderLength(beginWord, endWord, wordList) {\n  if (!wordList.includes(endWord)) return 0;\n  const wordSet = new Set(wordList);\n  const queue = [[beginWord, 1]];\n  const visited = new Set([beginWord]);\n\n  while (queue.length) {\n    const [word, level] = queue.shift();\n    if (word === endWord) return level;\n\n    for (let i = 0; i < word.length; i++) {\n      for (let c = 97; c <= 122; c++) {\n        const newWord = word.slice(0, i) + String.fromCharCode(c) + word.slice(i + 1);\n        if (wordSet.has(newWord) && !visited.has(newWord)) {\n          visited.add(newWord);\n          queue.push([newWord, level + 1]);\n        }\n      }\n    }\n  }\n  return 0;\n}\n\n// Usage\n// ladderLength('hit', 'cog', ['hot','dot','dog','lot','log','cog']) // 5",
+        "explanation": "Generates all possible one-letter mutations (26 * word.length) per node. BFS guarantees shortest path. Time O(N * L * 26), Space O(N * L) where N=wordList size, L=word length."
+      },
+      {
+        "title": "Example 2: Bidirectional BFS Optimization",
+        "code": "function ladderLengthBi(beginWord, endWord, wordList) {\n  if (!wordList.includes(endWord)) return 0;\n  const wordSet = new Set(wordList);\n  let beginSet = new Set([beginWord]);\n  let endSet = new Set([endWord]);\n  let steps = 1;\n\n  while (beginSet.size && endSet.size) {\n    const nextSet = new Set();\n    for (const word of beginSet) {\n      for (let i = 0; i < word.length; i++) {\n        for (let c = 97; c <= 122; c++) {\n          const newWord = word.slice(0, i) + String.fromCharCode(c) + word.slice(i + 1);\n          if (endSet.has(newWord)) return steps + 1;\n          if (wordSet.has(newWord)) {\n            nextSet.add(newWord);\n            wordSet.delete(newWord);\n          }\n        }\n      }\n    }\n    beginSet = nextSet;\n    steps++;\n    // Swap to always expand the smaller set\n    if (beginSet.size > endSet.size) {\n      [beginSet, endSet] = [endSet, beginSet];\n    }\n  }\n  return 0;\n}",
+        "explanation": "Expands from both begin and end simultaneously, always growing the smaller frontier. Meets in the middle faster. Cuts search space roughly in half. Time O(N * L * 26) worst case, but much faster in practice."
+      }
+    ]
+  }
+]

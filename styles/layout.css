@@ -1,0 +1,141 @@
+/* === Layout Shell === */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* === Header === */
+header {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.logo span {
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pill {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--text-dim);
+  box-shadow: var(--shadow-sm);
+}
+
+.pill .count {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* === Sidebar === */
+aside {
+  width: 260px;
+  min-width: 260px;
+  min-height: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Make the list fill available space above .set-toggle */
+.problem-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.sidebar-top {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-section {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* === Mode Toggle Buttons pinned to bottom === */
+.set-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;       /* never shrink */
+  position: sticky;
+  bottom: 0;
+  background: var(--panel);   /* cover scrolling content behind it */
+  z-index: 1;
+}
+
+.set-btn {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 5px 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.set-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* === Main Pane === */
+main {
+  flex: 1 1 0;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 22px 26px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* === Layout Utilities === */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+}
+
+.sidebar-overlay.visible {
+  display: block;
+}

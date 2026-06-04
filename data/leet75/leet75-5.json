@@ -1,0 +1,360 @@
+[
+  {
+    "id": 61,
+    "title": "Kth Smallest Element in a BST",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "BST",
+      "DFS",
+      "Recursion",
+      "Iteration"
+    ],
+    "description": "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
+    "examples": [
+      {
+        "input": "root = [3,1,4,null,2], k = 1",
+        "output": "1"
+      }
+    ],
+    "starter": "function kthSmallest(root, k) {\n    // Your code here\n}",
+    "optimalSolution": "function kthSmallest(root, k) {\n  const stack = [];\n  while (true) {\n    while (root) { stack.push(root); root = root.left; }\n    root = stack.pop();\n    if (--k === 0) return root.val;\n    root = root.right;\n  }\n}",
+    "optimalTime": "O(h + k)",
+    "optimalSpace": "O(h)",
+    "pattern": "In-order Traversal"
+  },
+  {
+    "id": 62,
+    "title": "Serialize and Deserialize Binary Tree",
+    "difficulty": "hard",
+    "topics": [
+      "Tree",
+      "DFS",
+      "String",
+      "BFS"
+    ],
+    "description": "Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link. Design an algorithm to serialize and deserialize a binary tree.",
+    "examples": [
+      {
+        "input": "root = [1,2,3,null,null,4,5]",
+        "output": "[1,2,3,null,null,4,5]"
+      }
+    ],
+    "starter": "function serialize(root) {\n    // Your code here\n}\nfunction deserialize(data) {\n    // Your code here\n}",
+    "optimalSolution": "function serialize(root) {\n  const vals = [];\n  const dfs = (node) => {\n    if (!node) { vals.push('null'); return; }\n    vals.push(node.val);\n    dfs(node.left);\n    dfs(node.right);\n  };\n  dfs(root);\n  return vals.join(',');\n}\nfunction deserialize(data) {\n  const vals = data.split(',');\n  let i = 0;\n  const dfs = () => {\n    if (vals[i] === 'null') return i++, null;\n    const node = new TreeNode(+vals[i++]);\n    node.left = dfs();\n    node.right = dfs();\n    return node;\n  };\n  return dfs();\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "DFS / BFS Serialization"
+  },
+  {
+    "id": 63,
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "DFS",
+      "Recursion"
+    ],
+    "description": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+    "examples": [
+      {
+        "input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1",
+        "output": "3"
+      }
+    ],
+    "starter": "function lowestCommonAncestor(root, p, q) {\n    // Your code here\n}",
+    "optimalSolution": "function lowestCommonAncestor(root, p, q) {\n  if (!root || root === p || root === q) return root;\n  const left = lowestCommonAncestor(root.left, p, q);\n  const right = lowestCommonAncestor(root.right, p, q);\n  if (left && right) return root;\n  return left || right;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(h)",
+    "pattern": "DFS / Recursion"
+  },
+  {
+    "id": 64,
+    "title": "Kth Largest Element in an Array",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Sorting",
+      "Heap",
+      "Quickselect"
+    ],
+    "description": "Given an integer array nums and an integer k, return the kth largest element in the array.",
+    "examples": [
+      {
+        "input": "nums = [3,2,1,5,6,4], k = 2",
+        "output": "5"
+      },
+      {
+        "input": "nums = [3,2,3,1,2,4,5,5,6], k = 4",
+        "output": "4"
+      }
+    ],
+    "starter": "function findKthLargest(nums, k) {\n    // Your code here\n}",
+    "optimalSolution": "function findKthLargest(nums, k) {\n  const quickSelect = (l, r, idx) => {\n    const pivot = nums[r];\n    let p = l;\n    for (let i = l; i < r; i++)\n      if (nums[i] < pivot) [nums[i], nums[p++]] = [nums[p], nums[i]];\n    [nums[p], nums[r]] = [nums[r], nums[p]];\n    if (p === idx) return nums[p];\n    return p < idx ? quickSelect(p + 1, r, idx) : quickSelect(l, p - 1, idx);\n  };\n  return quickSelect(0, nums.length - 1, nums.length - k);\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Quickselect / Heap"
+  },
+  {
+    "id": 65,
+    "title": "Median of Two Sorted Arrays",
+    "difficulty": "hard",
+    "topics": [
+      "Array",
+      "Binary Search",
+      "Divide and Conquer"
+    ],
+    "description": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.",
+    "examples": [
+      {
+        "input": "nums1 = [1,3], nums2 = [2]",
+        "output": "2.0"
+      },
+      {
+        "input": "nums1 = [1,2], nums2 = [3,4]",
+        "output": "2.5"
+      }
+    ],
+    "starter": "function findMedianSortedArrays(nums1, nums2) {\n    // Your code here\n}",
+    "optimalSolution": "function findMedianSortedArrays(nums1, nums2) {\n  const m = nums1.length, n = nums2.length;\n  if (m > n) return findMedianSortedArrays(nums2, nums1);\n  let l = 0, r = m;\n  while (l <= r) {\n    const i = (l + r) >> 1, j = (m + n + 1) / 2 - i;\n    const left1 = i ? nums1[i - 1] : -Infinity;\n    const left2 = j ? nums2[j - 1] : -Infinity;\n    const right1 = i < m ? nums1[i] : Infinity;\n    const right2 = j < n ? nums2[j] : Infinity;\n    if (left1 <= right2 && left2 <= right1)\n      return (m + n) % 2\n        ? Math.max(left1, left2)\n        : (Math.max(left1, left2) + Math.min(right1, right2)) / 2;\n    if (left1 > right2) r = i - 1;\n    else l = i + 1;\n  }\n}",
+    "optimalTime": "O(log(min(m, n)))",
+    "optimalSpace": "O(1)",
+    "pattern": "Binary Search"
+  },
+  {
+    "id": 66,
+    "title": "Pow(x, n)",
+    "difficulty": "medium",
+    "topics": [
+      "Math",
+      "Recursion"
+    ],
+    "description": "Implement pow(x, n), which calculates x raised to the power n.",
+    "examples": [
+      {
+        "input": "x = 2.00000, n = 10",
+        "output": "1024.0"
+      },
+      {
+        "input": "x = 2.10000, n = 3",
+        "output": "9.261000000000001"
+      },
+      {
+        "input": "x = 2.00000, n = -2",
+        "output": "0.25"
+      }
+    ],
+    "starter": "function myPow(x, n) {\n    // Your code here\n}",
+    "optimalSolution": "function myPow(x, n) {\n  if (n === 0) return 1;\n  if (n < 0) { x = 1 / x; n = -n; }\n  let res = 1;\n  while (n) {\n    if (n & 1) res *= x;\n    x *= x;\n    n >>= 1;\n  }\n  return res;\n}",
+    "optimalTime": "O(log n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Binary Exponentiation"
+  },
+  {
+    "id": 67,
+    "title": "Word Search",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Backtracking",
+      "Matrix"
+    ],
+    "description": "Given an m x n grid of characters board and a string word, return true if word exists in the grid.",
+    "examples": [
+      {
+        "input": "board = [['A','B','C','E'],['S','F','C','S'],['A','D','E','E']], word = 'ABCCED'",
+        "output": "true"
+      }
+    ],
+    "starter": "function exist(board, word) {\n    // Your code here\n}",
+    "optimalSolution": "function exist(board, word) {\n  const m = board.length, n = board[0].length;\n  const dfs = (i, j, idx) => {\n    if (idx === word.length) return true;\n    if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] !== word[idx]) return false;\n    board[i][j] = '#';\n    const found = dfs(i + 1, j, idx + 1) || dfs(i - 1, j, idx + 1) ||\n                 dfs(i, j + 1, idx + 1) || dfs(i, j - 1, idx + 1);\n    board[i][j] = word[idx];\n    return found;\n  };\n  for (let i = 0; i < m; i++)\n    for (let j = 0; j < n; j++)\n      if (dfs(i, j, 0)) return true;\n  return false;\n}",
+    "optimalTime": "O(m * n * 4^L)",
+    "optimalSpace": "O(L)",
+    "pattern": "DFS / Backtracking"
+  },
+  {
+    "id": 68,
+    "title": "Longest Consecutive Sequence",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Hash Table"
+    ],
+    "description": "Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.",
+    "examples": [
+      {
+        "input": "nums = [100,4,200,1,3,2]",
+        "output": "4"
+      }
+    ],
+    "starter": "function longestConsecutive(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function longestConsecutive(nums) {\n  const set = new Set(nums);\n  let max = 0;\n  for (const num of nums) {\n    if (!set.has(num - 1)) {\n      let curr = num, len = 1;\n      while (set.has(curr + 1)) { curr++; len++; }\n      max = Math.max(max, len);\n    }\n  }\n  return max;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Hash Table"
+  },
+  {
+    "id": 69,
+    "title": "Palindromic Partitioning",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP",
+      "Backtracking"
+    ],
+    "description": "Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.",
+    "examples": [
+      {
+        "input": "s = 'aab'",
+        "output": "[['a','a','b'],['aa','b']]"
+      }
+    ],
+    "starter": "function partition(s) {\n    // Your code here\n}",
+    "optimalSolution": "function partition(s) {\n  const res = [];\n  const isPal = (l, r) => {\n    while (l < r) if (s[l++] !== s[r--]) return false;\n    return true;\n  };\n  const dfs = (idx, curr) => {\n    if (idx === s.length) { res.push([...curr]); return; }\n    for (let i = idx; i < s.length; i++)\n      if (isPal(idx, i)) {\n        curr.push(s.slice(idx, i + 1));\n        dfs(i + 1, curr);\n        curr.pop();\n      }\n  };\n  dfs(0, []);\n  return res;\n}",
+    "optimalTime": "O(n * 2^n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Backtracking + DP"
+  },
+  {
+    "id": 70,
+    "title": "Pascals Triangle",
+    "difficulty": "easy",
+    "topics": [
+      "Array",
+      "DP",
+      "Math"
+    ],
+    "description": "Given an integer numRows, return the first numRows of Pascal's triangle.",
+    "examples": [
+      {
+        "input": "numRows = 5",
+        "output": "[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]"
+      }
+    ],
+    "starter": "function generate(numRows) {\n    // Your code here\n}",
+    "optimalSolution": "function generate(numRows) {\n  const res = [];\n  for (let i = 0; i < numRows; i++) {\n    const row = new Array(i + 1).fill(1);\n    for (let j = 1; j < i; j++) row[j] = res[i - 1][j - 1] + res[i - 1][j];\n    res.push(row);\n  }\n  return res;\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(n^2)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 71,
+    "title": "Number of 1 Bits",
+    "difficulty": "easy",
+    "topics": [
+      "Math",
+      "Bit Manipulation"
+    ],
+    "description": "Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the Hamming weight).",
+    "examples": [
+      {
+        "input": "n = 43 (00000000000000000000000000001011)",
+        "output": "3"
+      }
+    ],
+    "starter": "function hammingWeight(n) {\n    // Your code here\n}",
+    "optimalSolution": "function hammingWeight(n) {\n  let count = 0;\n  while (n) { n &= n - 1; count++; }\n  return count;\n}",
+    "optimalTime": "O(1)",
+    "optimalSpace": "O(1)",
+    "pattern": "Bit Manipulation"
+  },
+  {
+    "id": 72,
+    "title": "Single Number",
+    "difficulty": "easy",
+    "topics": [
+      "Array",
+      "Bit Manipulation",
+      "Hash Table"
+    ],
+    "description": "Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.",
+    "examples": [
+      {
+        "input": "nums = [2,2,1]",
+        "output": "1"
+      },
+      {
+        "input": "nums = [4,1,2,1,2]",
+        "output": "4"
+      }
+    ],
+    "starter": "function singleNumber(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function singleNumber(nums) {\n  let res = 0;\n  for (const n of nums) res ^= n;\n  return res;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Bit Manipulation"
+  },
+  {
+    "id": 73,
+    "title": "Add Two Numbers",
+    "difficulty": "medium",
+    "topics": [
+      "Linked List",
+      "Math",
+      "Recursion"
+    ],
+    "description": "You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each node contains a single digit. Add the two numbers and return the sum as a linked list.",
+    "examples": [
+      {
+        "input": "l1 = [2,4,3], l2 = [5,6,4]",
+        "output": "[7,0,8]"
+      }
+    ],
+    "starter": "function addTwoNumbers(l1, l2) {\n    // Your code here\n}",
+    "optimalSolution": "function addTwoNumbers(l1, l2) {\n  const dummy = new ListNode(0);\n  let curr = dummy, carry = 0;\n  while (l1 || l2 || carry) {\n    const sum = (l1 ? l1.val : 0) + (l2 ? l2.val : 0) + carry;\n    carry = sum / 10 | 0;\n    curr.next = new ListNode(sum % 10);\n    curr = curr.next;\n    l1 = l1 && l1.next;\n    l2 = l2 && l2.next;\n  }\n  return dummy.next;\n}",
+    "optimalTime": "O(max(m, n))",
+    "optimalSpace": "O(max(m, n))",
+    "pattern": "Linked List + Math"
+  },
+  {
+    "id": 74,
+    "title": "Reverse Integer",
+    "difficulty": "medium",
+    "topics": [
+      "Math"
+    ],
+    "description": "Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range, then return 0.",
+    "examples": [
+      {
+        "input": "x = 123",
+        "output": "321"
+      },
+      {
+        "input": "x = -123",
+        "output": "-321"
+      },
+      {
+        "input": "x = 120",
+        "output": "21"
+      }
+    ],
+    "starter": "function reverse(x) {\n    // Your code here\n}",
+    "optimalSolution": "function reverse(x) {\n  let rev = 0;\n  while (x) {\n    rev = rev * 10 + (x % 10);\n    x = x / 10 | 0;\n    if (rev > 2147483647 || rev < -2147483648) return 0;\n  }\n  return rev;\n}",
+    "optimalTime": "O(log |x|)",
+    "optimalSpace": "O(1)",
+    "pattern": "Math"
+  },
+  {
+    "id": 75,
+    "title": "Maximum Frequency Stack",
+    "difficulty": "hard",
+    "topics": [
+      "Stack",
+      "Heap",
+      "Hash Table",
+      "Design"
+    ],
+    "description": "Design a stack-like data structure that supports push, pop, and retrieving the maximum frequency element. Implement FreqStack class that supports push(val) (push an integer val onto the stack), pop (remove and return the most frequent element, breaking ties by most recent), and peek (return the most frequent element without removing).",
+    "examples": [
+      {
+        "input": "[FreqStack(), push(5), push(7), push(5), push(7), push(4), pop(), pop(), pop(), pop()]",
+        "output": "[null,null,null,null,null,null,5,7,5,4]"
+      }
+    ],
+    "starter": "class FreqStack {\n  constructor() {\n    // Your code here\n  }\n  push(val) {\n    // Your code here\n  }\n  pop() {\n    // Your code here\n  }\n}",
+    "optimalSolution": "class FreqStack {\n  constructor() {\n    this.freq = new Map();\n    this.groups = new Map();\n    this.maxFreq = 0;\n  }\n  push(val) {\n    const f = (this.freq.get(val) || 0) + 1;\n    this.freq.set(val, f);\n    this.maxFreq = Math.max(this.maxFreq, f);\n    if (!this.groups.has(f)) this.groups.set(f, []);\n    this.groups.get(f).push(val);\n  }\n  pop() {\n    const val = this.groups.get(this.maxFreq).pop();\n    this.freq.set(val, this.maxFreq - 1);\n    if (!this.groups.get(this.maxFreq).length) this.maxFreq--;\n    return val;\n  }\n}",
+    "optimalTime": "O(log n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Heap / Hash Map + Stack"
+  }
+]

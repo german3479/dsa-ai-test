@@ -1,0 +1,359 @@
+[
+  {
+    "id": 31,
+    "title": "Coin Change",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP",
+      "BFS"
+    ],
+    "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.",
+    "examples": [
+      {
+        "input": "coins = [1,2,5], amount = 11",
+        "output": "3"
+      },
+      {
+        "input": "coins = [2], amount = 3",
+        "output": "-1"
+      }
+    ],
+    "starter": "function coinChange(coins, amount) {\n    // Your code here\n}",
+    "optimalSolution": "function coinChange(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let i = 1; i <= amount; i++)\n    for (const c of coins)\n      if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+    "optimalTime": "O(amount * n)",
+    "optimalSpace": "O(amount)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 32,
+    "title": "Longest Increasing Subsequence",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP",
+      "Binary Search"
+    ],
+    "description": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+    "examples": [
+      {
+        "input": "nums = [10,9,2,5,3,7,101,18]",
+        "output": "4"
+      }
+    ],
+    "starter": "function lengthOfLIS(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function lengthOfLIS(nums) {\n  const sub = [];\n  for (const num of nums) {\n    let l = 0, r = sub.length;\n    while (l < r) {\n      const mid = (l + r) >> 1;\n      if (sub[mid] < num) l = mid + 1;\n      else r = mid;\n    }\n    sub[l] = num;\n  }\n  return sub.length;\n}",
+    "optimalTime": "O(n log n)",
+    "optimalSpace": "O(n)",
+    "pattern": "DP + Binary Search"
+  },
+  {
+    "id": 33,
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "Array",
+      "Hash Table",
+      "DFS",
+      "Recursion"
+    ],
+    "description": "Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.",
+    "examples": [
+      {
+        "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+        "output": "[3,9,20,null,null,15,7]"
+      }
+    ],
+    "starter": "function buildTree(preorder, inorder) {\n    // Your code here\n}",
+    "optimalSolution": "function buildTree(preorder, inorder) {\n  const map = new Map();\n  for (let i = 0; i < inorder.length; i++) map.set(inorder[i], i);\n  let preIdx = 0;\n  const dfs = (lo, hi) => {\n    if (lo > hi) return null;\n    const root = new TreeNode(preorder[preIdx++]);\n    root.left = dfs(lo, map.get(root.val) - 1);\n    root.right = dfs(map.get(root.val) + 1, hi);\n    return root;\n  };\n  return dfs(0, inorder.length - 1);\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(n)",
+    "pattern": "Tree Construction"
+  },
+  {
+    "id": 34,
+    "title": "Longest Repeating Character Replacement",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "Sliding Window"
+    ],
+    "description": "You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times. Return the length of the longest substring containing the same letter you can get after performing the above operations.",
+    "examples": [
+      {
+        "input": "s = 'ABAB', k = 2",
+        "output": "4"
+      },
+      {
+        "input": "s = 'AABABBA', k = 1",
+        "output": "4"
+      }
+    ],
+    "starter": "function characterReplacement(s, k) {\n    // Your code here\n}",
+    "optimalSolution": "function characterReplacement(s, k) {\n  const count = new Array(26).fill(0);\n  let l = 0, maxCount = 0, maxLen = 0;\n  for (let r = 0; r < s.length; r++) {\n    const idx = s.charCodeAt(r) - 65;\n    maxCount = Math.max(maxCount, ++count[idx]);\n    while (r - l + 1 - maxCount > k) {\n      count[s.charCodeAt(l) - 65]--;\n      l++;\n      maxCount = Math.max(...count);\n    }\n    maxLen = Math.max(maxLen, r - l + 1);\n  }\n  return maxLen;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Sliding Window"
+  },
+  {
+    "id": 35,
+    "title": "Interleaving String",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "DP"
+    ],
+    "description": "Given strings s1, s2, and s3, find whether s3 is formed by an interleaving of s1 and s2.",
+    "examples": [
+      {
+        "input": "s1 = 'aabcc', s2 = 'dbbca', s3 = 'aadbbcbcac'",
+        "output": "true"
+      },
+      {
+        "input": "s1 = 'aabcc', s2 = 'dbbca', s3 = 'aadbbbaccc'",
+        "output": "false"
+      }
+    ],
+    "starter": "function isInterleave(s1, s2, s3) {\n    // Your code here\n}",
+    "optimalSolution": "function isInterleave(s1, s2, s3) {\n  const m = s1.length, n = s2.length;\n  if (m + n !== s3.length) return false;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= m; i++) {\n    dp[0] = dp[0] && s1[i - 1] === s3[i - 1];\n    for (let j = 1; j <= n; j++)\n      dp[j] = (dp[j] && s1[i - 1] === s3[i + j - 1]) || (dp[j - 1] && s2[j - 1] === s3[i + j - 1]);\n  }\n  return dp[n];\n}",
+    "optimalTime": "O(m * n)",
+    "optimalSpace": "O(m * n)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 36,
+    "title": "Palindromic Substrings",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "Two Pointers",
+      "DP"
+    ],
+    "description": "Given a string s, return the number of palindromic substrings in it. A substring is a contiguous sequence of characters within the string.",
+    "examples": [
+      {
+        "input": "s = 'abc'",
+        "output": "3"
+      },
+      {
+        "input": "s = 'aaa'",
+        "output": "6"
+      }
+    ],
+    "starter": "function countSubstrings(s) {\n    // Your code here\n}",
+    "optimalSolution": "function countSubstrings(s) {\n  let count = 0;\n  const expand = (l, r) => {\n    while (l >= 0 && r < s.length && s[l] === s[r]) {\n      count++;\n      l--; r++;\n    }\n  };\n  for (let i = 0; i < s.length; i++) {\n    expand(i, i);\n    expand(i, i + 1);\n  }\n  return count;\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(1)",
+    "pattern": "Expand Around Center"
+  },
+  {
+    "id": 37,
+    "title": "Reorder List",
+    "difficulty": "medium",
+    "topics": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "description": "You are given the head of a singly linked-list. Reorder the list to be L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → …",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4]",
+        "output": "[1,4,2,3]"
+      },
+      {
+        "input": "head = [1,2,3,4,5]",
+        "output": "[1,5,2,4,3]"
+      }
+    ],
+    "starter": "function reorderList(head) {\n    // Your code here\n}",
+    "optimalSolution": "function reorderList(head) {\n  if (!head || !head.next) return;\n  let slow = head, fast = head;\n  while (fast.next && fast.next.next) {\n    slow = slow.next;\n    fast = fast.next.next;\n  }\n  let prev = null, curr = slow.next;\n  while (curr) {\n    const nxt = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = nxt;\n  }\n  slow.next = null;\n  let first = head, second = prev;\n  while (second) {\n    const nxt1 = first.next, nxt2 = second.next;\n    first.next = second;\n    second.next = nxt1;\n    first = nxt1;\n    second = nxt2;\n  }\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers + Reverse"
+  },
+  {
+    "id": 38,
+    "title": "Find Minimum in Rotated Sorted Array",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Binary Search"
+    ],
+    "description": "Given the sorted rotated array nums of unique elements, return the minimum element of this array.",
+    "examples": [
+      {
+        "input": "nums = [3,4,5,1,2]",
+        "output": "1"
+      },
+      {
+        "input": "nums = [4,5,6,7,0,1,2]",
+        "output": "0"
+      }
+    ],
+    "starter": "function findMin(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function findMin(nums) {\n  let l = 0, r = nums.length - 1;\n  while (l < r) {\n    const mid = (l + r) >> 1;\n    if (nums[mid] > nums[r]) l = mid + 1;\n    else r = mid;\n  }\n  return nums[l];\n}",
+    "optimalTime": "O(log n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Binary Search"
+  },
+  {
+    "id": 39,
+    "title": "Combination Sum",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Backtracking"
+    ],
+    "description": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target.",
+    "examples": [
+      {
+        "input": "candidates = [2,3,6,7], target = 7",
+        "output": "[[2,2,3],[7]]"
+      }
+    ],
+    "starter": "function combinationSum(candidates, target) {\n    // Your code here\n}",
+    "optimalSolution": "function combinationSum(candidates, target) {\n  const res = [];\n  const dfs = (idx, curr, sum) => {\n    if (sum === target) { res.push([...curr]); return; }\n    if (sum > target) return;\n    for (let i = idx; i < candidates.length; i++) {\n      curr.push(candidates[i]);\n      dfs(i, curr, sum + candidates[i]);\n      curr.pop();\n    }\n  };\n  dfs(0, [], 0);\n  return res;\n}",
+    "optimalTime": "O(2^t)",
+    "optimalSpace": "O(t)",
+    "pattern": "Backtracking"
+  },
+  {
+    "id": 40,
+    "title": "Rotate List",
+    "difficulty": "medium",
+    "topics": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "description": "Given the head of a linked list, rotate the list to the right by k places.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4,5], k = 2",
+        "output": "[4,5,1,2,3]"
+      }
+    ],
+    "starter": "function rotateRight(head, k) {\n    // Your code here\n}",
+    "optimalSolution": "function rotateRight(head, k) {\n  if (!head || !head.next) return head;\n  let tail = head, len = 1;\n  while (tail.next) { tail = tail.next; len++; }\n  k %= len;\n  if (!k) return head;\n  let steps = len - k - 1, curr = head;\n  while (steps--) curr = curr.next;\n  const newHead = curr.next;\n  curr.next = null;\n  tail.next = head;\n  return newHead;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Linked List"
+  },
+  {
+    "id": 41,
+    "title": "Unique Binary Search Trees",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "DP",
+      "BST",
+      "Catalan"
+    ],
+    "description": "Given an integer n, return the number of structurally unique BST's which has exactly n nodes of unique values from 1 to n.",
+    "examples": [
+      {
+        "input": "n = 3",
+        "output": "5"
+      }
+    ],
+    "starter": "function numTrees(n) {\n    // Your code here\n}",
+    "optimalSolution": "function numTrees(n) {\n  const dp = new Array(n + 1).fill(0);\n  dp[0] = dp[1] = 1;\n  for (let i = 2; i <= n; i++)\n    for (let j = 1; j <= i; j++)\n      dp[i] += dp[j - 1] * dp[i - j];\n  return dp[n];\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(n)",
+    "pattern": "Catalan DP"
+  },
+  {
+    "id": 42,
+    "title": "Binary Tree Level Order Traversal",
+    "difficulty": "medium",
+    "topics": [
+      "Tree",
+      "BFS",
+      "Queue"
+    ],
+    "description": "Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "[[3],[9,20],[15,7]]"
+      }
+    ],
+    "starter": "function levelOrder(root) {\n    // Your code here\n}",
+    "optimalSolution": "function levelOrder(root) {\n  if (!root) return [];\n  const res = [], q = [root];\n  while (q.length) {\n    const level = [];\n    const len = q.length;\n    for (let i = 0; i < len; i++) {\n      const node = q.shift();\n      level.push(node.val);\n      if (node.left) q.push(node.left);\n      if (node.right) q.push(node.right);\n    }\n    res.push(level);\n  }\n  return res;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "BFS / Queue"
+  },
+  {
+    "id": 43,
+    "title": "Task Scheduler",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Greedy",
+      "Heap"
+    ],
+    "description": "Given a characters array tasks representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task takes one unit of time. For each unit of time, the CPU could complete either one task or just be idle. Return the least number of units of time that the CPU will take to finish all the given tasks.",
+    "examples": [
+      {
+        "input": "tasks = ['A','A','A','B','B','B'], n = 2",
+        "output": "8"
+      }
+    ],
+    "starter": "function leastInterval(tasks, n) {\n    // Your code here\n}",
+    "optimalSolution": "function leastInterval(tasks, n) {\n  const freq = {};\n  for (const t of tasks) freq[t] = (freq[t] || 0) + 1;\n  const maxFreq = Math.max(...Object.values(freq));\n  const maxCount = Object.values(freq).filter(v => v === maxFreq).length;\n  return Math.max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount);\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Greedy / Heap"
+  },
+  {
+    "id": 44,
+    "title": "House Robber",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP"
+    ],
+    "description": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night. Return the maximum amount of money you can rob tonight without alerting the police.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4"
+      },
+      {
+        "input": "nums = [2,7,9,3,1]",
+        "output": "12"
+      }
+    ],
+    "starter": "function rob(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function rob(nums) {\n  let prev = 0, curr = 0;\n  for (const n of nums) [prev, curr] = [curr, Math.max(curr, prev + n)];\n  return curr;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Dynamic Programming"
+  },
+  {
+    "id": 45,
+    "title": "House Robber II",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP"
+    ],
+    "description": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. Return the maximum amount of money you can rob tonight without alerting the police.",
+    "examples": [
+      {
+        "input": "nums = [2,3,2]",
+        "output": "3"
+      },
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4"
+      }
+    ],
+    "starter": "function rob(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function rob(nums) {\n  if (nums.length === 1) return nums[0];\n  const robLine = (arr) => {\n    let prev = 0, curr = 0;\n    for (const n of arr) [prev, curr] = [curr, Math.max(curr, prev + n)];\n    return curr;\n  };\n  return Math.max(robLine(nums.slice(0, -1)), robLine(nums.slice(1)));\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Dynamic Programming"
+  }]

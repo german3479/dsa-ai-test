@@ -1,0 +1,388 @@
+[
+  {
+    "id": 1,
+    "title": "Two Sum",
+    "difficulty": "easy",
+    "topics": [
+      "Array",
+      "Hash Table"
+    ],
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+    "examples": [
+      {
+        "input": "nums = [2,7,11,15], target = 9",
+        "output": "[0,1]"
+      },
+      {
+        "input": "nums = [3,2,4], target = 6",
+        "output": "[1,2]"
+      }
+    ],
+    "starter": "function twoSum(nums, target) {\n    // Your code here\n}",
+    "optimalSolution": "function twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (map.has(complement)) return [map.get(complement), i];\n    map.set(nums[i], i);\n  }\n  return [];\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Hash Map"
+  },
+  {
+    "id": 2,
+    "title": "Valid Parentheses",
+    "difficulty": "easy",
+    "topics": [
+      "String",
+      "Stack"
+    ],
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
+    "examples": [
+      {
+        "input": "s = '()'",
+        "output": "true"
+      },
+      {
+        "input": "s = '()[]{}'",
+        "output": "true"
+      },
+      {
+        "input": "s = '(]'",
+        "output": "false"
+      }
+    ],
+    "starter": "function isValid(s) {\n    // Your code here\n}",
+    "optimalSolution": "function isValid(s) {\n  const stack = [];\n  const map = { '(': ')', '{': '}', '[': ']' };\n  for (const c of s) {\n    if (map[c]) stack.push(c);\n    else if (map[stack.pop()] !== c) return false;\n  }\n  return stack.length === 0;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(n)",
+    "pattern": "Stack"
+  },
+  {
+    "id": 3,
+    "title": "Merge Two Sorted Lists",
+    "difficulty": "easy",
+    "topics": [
+      "Linked List",
+      "Recursion"
+    ],
+    "description": "Merge two sorted linked lists and return it as a sorted list. The list should be made by splicing together the nodes of the first two lists.",
+    "examples": [
+      {
+        "input": "l1 = [1,2,4], l2 = [1,3,4]",
+        "output": "[1,1,2,3,4,4]"
+      }
+    ],
+    "starter": "function mergeTwoLists(l1, l2) {\n    // Your code here\n}",
+    "optimalSolution": "function mergeTwoLists(l1, l2) {\n  const dummy = new ListNode(0);\n  let curr = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }\n    else { curr.next = l2; l2 = l2.next; }\n    curr = curr.next;\n  }\n  curr.next = l1 || l2;\n  return dummy.next;\n}",
+    "optimalTime": "O(n + m)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers / Linked List"
+  },
+  {
+    "id": 4,
+    "title": "Best Time to Buy and Sell Stock",
+    "difficulty": "easy",
+    "topics": [
+      "Array",
+      "DP"
+    ],
+    "description": "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.",
+    "examples": [
+      {
+        "input": "prices = [7,1,5,3,6,4]",
+        "output": "5"
+      },
+      {
+        "input": "prices = [7,6,4,3,1]",
+        "output": "0"
+      }
+    ],
+    "starter": "function maxProfit(prices) {\n    // Your code here\n}",
+    "optimalSolution": "function maxProfit(prices) {\n  let min = Infinity, max = 0;\n  for (const p of prices) {\n    if (p < min) min = p;\n    else if (p - min > max) max = p - min;\n  }\n  return max;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Single Pass"
+  },
+  {
+    "id": 5,
+    "title": "Valid Palindrome",
+    "difficulty": "easy",
+    "topics": [
+      "String",
+      "Two Pointers"
+    ],
+    "description": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
+    "examples": [
+      {
+        "input": "s = 'A man, a plan, a canal: Panama'",
+        "output": "true"
+      },
+      {
+        "input": "s = 'race a car'",
+        "output": "false"
+      }
+    ],
+    "starter": "function isPalindrome(s) {\n    // Your code here\n}",
+    "optimalSolution": "function isPalindrome(s) {\n  let l = 0, r = s.length - 1;\n  while (l < r) {\n    while (l < r && !/^[a-z0-9]$/i.test(s[l])) l++;\n    while (l < r && !/^[a-z0-9]$/i.test(s[r])) r--;\n    if (s[l++].toLowerCase() !== s[r--].toLowerCase()) return false;\n  }\n  return true;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers"
+  },
+  {
+    "id": 6,
+    "title": "Linked List Cycle",
+    "difficulty": "easy",
+    "topics": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it.",
+    "examples": [
+      {
+        "input": "head = [3,2,0,-4], pos = 1",
+        "output": "true"
+      },
+      {
+        "input": "head = [1,2], pos = 0",
+        "output": "true"
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false"
+      }
+    ],
+    "starter": "function hasCycle(head) {\n    // Your code here\n}",
+    "optimalSolution": "function hasCycle(head) {\n  let slow = head, fast = head;\n  while (fast && fast.next) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow === fast) return true;\n  }\n  return false;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Floyd's Cycle Detection"
+  },
+  {
+    "id": 7,
+    "title": "Product of Array Except Self",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Prefix Sum"
+    ],
+    "description": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,4]",
+        "output": "[24,12,8,6]"
+      }
+    ],
+    "starter": "function productExceptSelf(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function productExceptSelf(nums) {\n  const n = nums.length;\n  const ans = new Array(n).fill(1);\n  let left = 1, right = 1;\n  for (let i = 0; i < n; i++) {\n    ans[i] *= left;\n    left *= nums[i];\n    ans[n - 1 - i] *= right;\n    right *= nums[n - 1 - i];\n  }\n  return ans;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Prefix Product"
+  },
+  {
+    "id": 8,
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "Sliding Window",
+      "Hash Table"
+    ],
+    "description": "Given a string s, find the length of the longest substring without repeating characters.",
+    "examples": [
+      {
+        "input": "s = 'abcabcbb'",
+        "output": "3"
+      },
+      {
+        "input": "s = 'bbbbb'",
+        "output": "1"
+      },
+      {
+        "input": "s = 'pwwkew'",
+        "output": "3"
+      }
+    ],
+    "starter": "function lengthOfLongestSubstring(s) {\n    // Your code here\n}",
+    "optimalSolution": "function lengthOfLongestSubstring(s) {\n  const set = new Set();\n  let l = 0, max = 0;\n  for (let r = 0; r < s.length; r++) {\n    while (set.has(s[r])) set.delete(s[l++]);\n    set.add(s[r]);\n    max = Math.max(max, r - l + 1);\n  }\n  return max;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(min(m, n))",
+    "pattern": "Sliding Window"
+  },
+  {
+    "id": 9,
+    "title": "3Sum",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Sorting"
+    ],
+    "description": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.",
+    "examples": [
+      {
+        "input": "nums = [-1,0,1,2,-1,-4]",
+        "output": "[[-1,-1,2],[-1,0,1]]"
+      }
+    ],
+    "starter": "function threeSum(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function threeSum(nums) {\n  nums.sort((a, b) => a - b);\n  const res = [];\n  for (let i = 0; i < nums.length - 2; i++) {\n    if (i > 0 && nums[i] === nums[i - 1]) continue;\n    let l = i + 1, r = nums.length - 1;\n    while (l < r) {\n      const sum = nums[i] + nums[l] + nums[r];\n      if (!sum) {\n        res.push([nums[i], nums[l], nums[r]]);\n        while (l < r && nums[l] === nums[l + 1]) l++;\n        while (l < r && nums[r] === nums[r - 1]) r--;\n        l++; r--;\n      } else if (sum < 0) l++;\n      else r--;\n    }\n  }\n  return res;\n}",
+    "optimalTime": "O(n^2)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers"
+  },
+  {
+    "id": 10,
+    "title": "Merge k Sorted Lists",
+    "difficulty": "hard",
+    "topics": [
+      "Linked List",
+      "Heap",
+      "Divide and Conquer"
+    ],
+    "description": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+    "examples": [
+      {
+        "input": "lists = [[1,4,5],[1,3,4],[2,6]]",
+        "output": "[1,1,2,3,4,4,5,6]"
+      },
+      {
+        "input": "lists = []",
+        "output": "[]"
+      },
+      {
+        "input": "lists = [[]]",
+        "output": "[]"
+      }
+    ],
+    "starter": "function mergeKLists(lists) {\n    // Your code here\n}",
+    "optimalSolution": "function mergeKLists(lists) {\n  if (!lists.length) return null;\n  const mergeTwo = (a, b) => {\n    const dummy = new ListNode(0);\n    let curr = dummy;\n    while (a && b) {\n      if (a.val <= b.val) { curr.next = a; a = a.next; }\n      else { curr.next = b; b = b.next; }\n      curr = curr.next;\n    }\n    curr.next = a || b;\n    return dummy.next;\n  };\n  let interval = 1;\n  while (interval < lists.length) {\n    for (let i = 0; i < lists.length - interval; i += interval * 2) {\n      lists[i] = mergeTwo(lists[i], lists[i + interval]);\n    }\n    interval *= 2;\n  }\n  return lists[0];\n}",
+    "optimalTime": "O(N log k)",
+    "optimalSpace": "O(1)",
+    "pattern": "Heap / Merge Sort"
+  },
+  {
+    "id": 11,
+    "title": "Maximum Subarray",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP",
+      "Divide and Conquer"
+    ],
+    "description": "Given an integer array nums, find the subarray with the largest sum, and return its sum.",
+    "examples": [
+      {
+        "input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+        "output": "6"
+      },
+      {
+        "input": "nums = [1]",
+        "output": "1"
+      },
+      {
+        "input": "nums = [5,4,-1,7,8]",
+        "output": "23"
+      }
+    ],
+    "starter": "function maxSubArray(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function maxSubArray(nums) {\n  let max = nums[0], curr = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    max = Math.max(max, curr);\n  }\n  return max;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Kadane's Algorithm"
+  },
+  {
+    "id": 12,
+    "title": "Maximum Product Subarray",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "DP"
+    ],
+    "description": "Given an integer array nums, find a subarray that has the largest product, and return the product.",
+    "examples": [
+      {
+        "input": "nums = [2,3,-2,4]",
+        "output": "6"
+      },
+      {
+        "input": "nums = [-2,0,-1]",
+        "output": "0"
+      }
+    ],
+    "starter": "function maxProduct(nums) {\n    // Your code here\n}",
+    "optimalSolution": "function maxProduct(nums) {\n  let max = nums[0], min = nums[0], ans = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    const tmpMax = max;\n    max = Math.max(nums[i], max * nums[i], min * nums[i]);\n    min = Math.min(nums[i], tmpMax * nums[i], min * nums[i]);\n    ans = Math.max(ans, max);\n  }\n  return ans;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Kadane's Variant / DP"
+  },
+  {
+    "id": 13,
+    "title": "Container With Most Water",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Greedy"
+    ],
+    "description": "You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]). Find two lines that together with the x-axis form a container, such that the container contains the most water.",
+    "examples": [
+      {
+        "input": "height = [1,8,6,2,5,4,8,3,7]",
+        "output": "49"
+      },
+      {
+        "input": "height = [1,1]",
+        "output": "1"
+      }
+    ],
+    "starter": "function maxArea(height) {\n    // Your code here\n}",
+    "optimalSolution": "function maxArea(height) {\n  let l = 0, r = height.length - 1, max = 0;\n  while (l < r) {\n    max = Math.max(max, Math.min(height[l], height[r]) * (r - l));\n    if (height[l] < height[r]) l++;\n    else r--;\n  }\n  return max;\n}",
+    "optimalTime": "O(n)",
+    "optimalSpace": "O(1)",
+    "pattern": "Two Pointers"
+  },
+  {
+    "id": 14,
+    "title": "Group Anagrams",
+    "difficulty": "medium",
+    "topics": [
+      "String",
+      "Hash Table",
+      "Sorting"
+    ],
+    "description": "Given an array of strings strs, group the anagrams together. You can return the answer in any order.",
+    "examples": [
+      {
+        "input": "strs = ['eat','tea','tan','ate','nat','bat']",
+        "output": "[['bat'],['nat','tan'],['eat','tea','ate']]"
+      }
+    ],
+    "starter": "function groupAnagrams(strs) {\n    // Your code here\n}",
+    "optimalSolution": "function groupAnagrams(strs) {\n  const map = new Map();\n  for (const s of strs) {\n    const key = s.split('').sort().join('');\n    if (!map.has(key)) map.set(key, []);\n    map.get(key).push(s);\n  }\n  return [...map.values()];\n}",
+    "optimalTime": "O(n * k log k)",
+    "optimalSpace": "O(n * k)",
+    "pattern": "Hash Table"
+  },
+  {
+    "id": 15,
+    "title": "Set Matrix Zeroes",
+    "difficulty": "medium",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Matrix"
+    ],
+    "description": "Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.",
+    "examples": [
+      {
+        "input": "matrix = [[1,1,1],[1,0,1],[1,1,1]]",
+        "output": "[[1,0,1],[0,0,0],[1,0,1]]"
+      },
+      {
+        "input": "matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]",
+        "output": "[[0,0,0,0],[0,4,5,0],[0,3,1,0]]"
+      }
+    ],
+    "starter": "function setZeroes(matrix) {\n    // Your code here\n}",
+    "optimalSolution": "function setZeroes(matrix) {\n  const m = matrix.length, n = matrix[0].length;\n  let firstRowHasZero = false, firstColHasZero = false;\n  for (let j = 0; j < n; j++) if (!matrix[0][j]) firstRowHasZero = true;\n  for (let i = 0; i < m; i++) if (!matrix[i][0]) firstColHasZero = true;\n  for (let i = 1; i < m; i++)\n    for (let j = 1; j < n; j++)\n      if (!matrix[i][j]) { matrix[i][0] = 0; matrix[0][j] = 0; }\n  for (let i = 1; i < m; i++)\n    for (let j = 1; j < n; j++)\n      if (!matrix[i][0] || !matrix[0][j]) matrix[i][j] = 0;\n  if (firstRowHasZero) for (let j = 0; j < n; j++) matrix[0][j] = 0;\n  if (firstColHasZero) for (let i = 0; i < m; i++) matrix[i][0] = 0;\n}",
+    "optimalTime": "O(m * n)",
+    "optimalSpace": "O(1)",
+    "pattern": "In-place Marker"
+  }
+]

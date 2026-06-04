@@ -1,0 +1,70 @@
+[
+  {
+    "id": "hm-1",
+    "name": "Frequency Counting (Hash Map)",
+    "description": "Counts occurrences of elements using an object or Map as a hash table. The most common hash map pattern in interviews, used for finding duplicates, majority elements, anagram grouping, and relative sort.",
+    "examples": [
+      {
+        "title": "Example 1: Find Majority Element (> n/2 times)",
+        "code": "function majorityElement(nums) {\n  const count = {};\n  \n  for (const num of nums) {\n    count[num] = (count[num] || 0) + 1;\n  }\n  \n  for (const num in count) {\n    if (count[num] > nums.length / 2) {\n      return Number(num);\n    }\n  }\n  return -1;\n}\n\n// Or in one pass with Boyer-Moore:\nfunction majorityElementOptimized(nums) {\n  let candidate = null;\n  let count = 0;\n  \n  for (const num of nums) {\n    if (count === 0) candidate = num;\n    count += num === candidate ? 1 : -1;\n  }\n  return candidate;\n}",
+        "explanation": "Two-pass: first counts frequencies, second finds majority. Boyer-Moore variant uses O(1) space. Time O(n), Space O(n) or O(1)."
+      },
+      {
+        "title": "Example 2: Valid Anagram Check",
+        "code": "function isAnagram(s, t) {\n  if (s.length !== t.length) return false;\n  \n  const count = {};\n  for (const char of s) {\n    count[char] = (count[char] || 0) + 1;\n  }\n  \n  for (const char of t) {\n    if (!count[char]) return false;\n    count[char]--;\n  }\n  \n  return true;\n}\n\n// One-liner using Map:\nfunction isAnagramMap(s, t) {\n  if (s.length !== t.length) return false;\n  const count = new Map();\n  for (const c of s) count.set(c, (count.get(c) || 0) + 1);\n  for (const c of t) {\n    if (!count.has(c)) return false;\n    count.set(c, count.get(c) - 1);\n  }\n  return true;\n}",
+        "explanation": "Count chars in s, decrement with t. If any count goes negative or key missing, not an anagram. Time O(n), Space O(1) assuming 26 lowercase chars (or O(k) where k=char set size)."
+      }
+    ]
+  },
+  {
+    "id": "hm-2",
+    "name": "Caching & Memoization",
+    "description": "Stores previously computed results to avoid redundant calculations. Used for optimizing recursive algorithms (DP), expensive function calls, and reducing time complexity from exponential to polynomial.",
+    "examples": [
+      {
+        "title": "Example 1: Fibonacci with Memoization",
+        "code": "function fibMemo(n, memo = {}) {\n  if (n in memo) return memo[n];\n  if (n <= 1) return n;\n  \n  memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);\n  return memo[n];\n}\n\n// Iterative DP with cache:\nfunction fibIterative(n) {\n  if (n <= 1) return n;\n  const dp = [0, 1];\n  \n  for (let i = 2; i <= n; i++) {\n    dp[i] = dp[i - 1] + dp[i - 2];\n  }\n  return dp[n];\n}\n\n// Space-optimized:\nfunction fibOptimized(n) {\n  if (n <= 1) return n;\n  let prev = 0, curr = 1;\n  for (let i = 2; i <= n; i++) {\n    [prev, curr] = [curr, prev + curr];\n  }\n  return curr;\n}",
+        "explanation": "Memoization caches recursive calls, turning O(2^n) into O(n). Iterative DP builds bottom-up. Space-optimized keeps only last two values. Time O(n), Space O(n) or O(1)."
+      },
+      {
+        "title": "Example 2: LRU Cache using Map",
+        "code": "class LRUCache {\n  constructor(capacity) {\n    this.capacity = capacity;\n    this.cache = new Map(); // maintains insertion order\n  }\n\n  get(key) {\n    if (!this.cache.has(key)) return -1;\n    \n    // Move to end (most recently used)\n    const value = this.cache.get(key);\n    this.cache.delete(key);\n    this.cache.set(key, value);\n    return value;\n  }\n\n  put(key, value) {\n    if (this.cache.has(key)) {\n      this.cache.delete(key);\n    } else if (this.cache.size >= this.capacity) {\n      // Map.keys() returns iterator in insertion order\n      const lru = this.cache.keys().next().value;\n      this.cache.delete(lru);\n    }\n    this.cache.set(key, value);\n  }\n}",
+        "explanation": "JavaScript Map maintains insertion order. get() refreshes position by delete+reinsert. put() evicts oldest entry (first key) when full. All operations O(1) average. Time O(1), Space O(capacity)."
+      }
+    ]
+  },
+  {
+    "id": "hm-3",
+    "name": "Grouping & Multi-set Indexing",
+    "description": "Groups elements by a key or property. Common for grouping anagrams, people by city, transactions by date, or building lookups from arrays. Can use object or Map depending on key type.",
+    "examples": [
+      {
+        "title": "Example 1: Group Anagrams",
+        "code": "function groupAnagrams(strs) {\n  const groups = {};\n  \n  for (const str of strs) {\n    const key = str.split('').sort().join('');\n    if (!groups[key]) groups[key] = [];\n    groups[key].push(str);\n  }\n  \n  return Object.values(groups);\n}\n\n// Optimized with character count key:\nfunction groupAnagramsOptimized(strs) {\n  const groups = {};\n  \n  for (const str of strs) {\n    const count = new Array(26).fill(0);\n    for (const c of str) count[c.charCodeAt(0) - 97]++;\n    const key = count.join('#');\n    if (!groups[key]) groups[key] = [];\n    groups[key].push(str);\n  }\n  \n  return Object.values(groups);\n}",
+        "explanation": "Sort each word to get canonical form as key. Optimized version counts chars (O(n) instead of O(n log n)) and joins with delimiter to avoid ambiguity. Time O(n * k log k) or O(n*k), Space O(n*k)."
+      },
+      {
+        "title": "Example 2: Index Array by Value (Two Sum pré-compute)",
+        "code": "function twoSum(nums, target) {\n  const seen = new Map();\n  \n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    \n    if (seen.has(complement)) {\n      return [seen.get(complement), i];\n    }\n    \n    seen.set(nums[i], i);\n  }\n  return [];\n}\n\n// Object variant:\nfunction twoSumObj(nums, target) {\n  const map = {};\n  \n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (map[comp] !== undefined) return [map[comp], i];\n    map[nums[i]] = i;\n  }\n  return [];\n}",
+        "explanation": "Store each number's index as we scan. For current num, check if complement exists. If found, return both indices. Map preferred over object for cleaner semantics and guaranteed O(1) hashing. Time O(n), Space O(n)."
+      }
+    ]
+  },
+  {
+    "id": "hm-4",
+    "name": "Set for Uniqueness & Fast Lookup",
+    "description": "JavaScript Set provides O(1) average insert, delete, and lookup. Used for deduplication, intersection/union operations, cycle detection, and checking membership without duplicates.",
+    "examples": [
+      {
+        "title": "Example 1: Remove Duplicates & Check Distinct",
+        "code": "function hasDuplicate(nums) {\n  const seen = new Set();\n  \n  for (const num of nums) {\n    if (seen.has(num)) return true;\n    seen.add(num);\n  }\n  return false;\n}\n\nfunction removeDuplicates(nums) {\n  return [...new Set(nums)];\n}\n\n// Intersection of two arrays:\nfunction intersection(nums1, nums2) {\n  const set1 = new Set(nums1);\n  const result = [];\n  \n  for (const num of nums2) {\n    if (set1.has(num)) {\n      result.push(num);\n      set1.delete(num); // avoid duplicates in result\n    }\n  }\n  return result;\n}",
+        "explanation": "Set.has() is O(1) average. Spread operator + Set removes duplicates. Intersection iterates smaller array into Set, then checks against larger. Time O(n+m), Space O(min(n,m))."
+      },
+      {
+        "title": "Example 2: Happy Number (Cycle Detection with Set)",
+        "code": "function isHappy(n) {\n  const seen = new Set();\n  \n  while (n !== 1) {\n    if (seen.has(n)) return false; // cycle detected\n    seen.add(n);\n    \n    let sum = 0;\n    while (n > 0) {\n      const digit = n % 10;\n      sum += digit * digit;\n      n = Math.floor(n / 10);\n    }\n    n = sum;\n  }\n  \n  return true;\n}\n\n// Alternative: Floyd's Cycle Detection (O(1) space)\nfunction isHappyFloyd(n) {\n  function sumDigits(x) {\n    let sum = 0;\n    while (x > 0) {\n      const d = x % 10;\n      sum += d * d;\n      x = Math.floor(x / 10);\n    }\n    return sum;\n  }\n  \n  let slow = n, fast = sumDigits(n);\n  while (fast !== 1 && slow !== fast) {\n    slow = sumDigits(slow);\n    fast = sumDigits(sumDigits(fast));\n  }\n  return fast === 1;\n}",
+        "explanation": "Set detects cycles by remembering seen states. If we repeat a number, we're in a loop. Floyd's algorithm uses two pointers (slow/fast) to detect cycle with O(1) space. Time O(log n) per iteration, Space O(log n) or O(1)."
+      }
+    ]
+  }
+]

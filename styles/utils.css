@@ -1,0 +1,16 @@
+.actions-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.empty {
+  color: var(--text-dim);
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 14px;
+}

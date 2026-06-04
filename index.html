@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JS DSA Practice · Blind 75</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+      <div class="logo">JS DSA <span>· Blind 75</span></div>
+    </div>
+    <div class="header-right">
+      <div class="pill">Progress: <span class="count" id="progress-count">0</span> / <span id="total-count">75</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <aside>
+      <div class="sidebar-top">
+        <input type="text" id="search-input" class="search" placeholder="🔍 Search problems…" autocomplete="off" />
+      </div>
+
+      <div class="sidebar-section">
+        <div class="control-label" id="filter-label">Difficulty</div>
+        <select id="filter-select" class="dropdown">
+          <!--populated by JS based on mode-->
+        </select>
+      </div>
+
+      <div class="problem-list" id="problem-list">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="set-toggle">
+        <button class="set-btn active" data-set="blind75">Blind 75</button>
+        <button class="set-btn" data-set="ds">Data Structures</button>
+      </div>
+    </aside>
+
+    <main id="main">
+      <div class="empty">← Select a problem from the list to begin.</div>
+    </main>
+
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
